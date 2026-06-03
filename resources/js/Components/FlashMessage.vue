@@ -1,0 +1,34 @@
+<script setup lang="ts">
+import { computed } from 'vue'
+import { usePage } from '@inertiajs/vue3'
+
+const page = usePage()
+
+const success = computed(
+    () => page.props.flash?.success
+)
+
+const error = computed(
+    () => page.props.flash?.error
+)
+</script>
+
+<template>
+    <div class="space-y-3">
+
+        <div
+            v-if="success"
+            class="rounded-lg border border-green-200 bg-green-50 p-4 text-green-800"
+        >
+            {{ success }}
+        </div>
+
+        <div
+            v-if="error"
+            class="rounded-lg border border-red-200 bg-red-50 p-4 text-red-800"
+        >
+            {{ error }}
+        </div>
+
+    </div>
+</template>
