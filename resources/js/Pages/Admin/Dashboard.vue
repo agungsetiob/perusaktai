@@ -4,13 +4,17 @@ import AdminLayout from '@/Layouts/AdminLayout.vue'
 import StatusBadge from '@/Components/StatusBadge.vue'
 import { formatDateTime } from '@/utils/date'
 import { computed } from 'vue'
-import { 
+import {
     Squares2X2Icon,
     ClockIcon,
     CheckCircleIcon,
     InboxIcon,
     ChartBarIcon,
-    ArrowTopRightOnSquareIcon
+    ArrowTopRightOnSquareIcon,
+    ClipboardDocumentListIcon,
+    DocumentMagnifyingGlassIcon,
+    ArrowPathIcon,
+    XCircleIcon
 } from '@heroicons/vue/24/outline'
 
 const props = defineProps<{
@@ -21,7 +25,7 @@ const props = defineProps<{
         on_process: number
         solved: number
         rejected: number
-        avg_resolution_hours: number
+        avg_resolution_hours: string | number // Tetap asli sesuai modifikasi controller Anda
         solved_this_month: number
         completion_rate: number
     }
@@ -66,7 +70,16 @@ const monthlyChartOptions = computed(() => ({
         labels: { style: { colors: '#94a3b8', fontSize: '12px' } }
     },
     yaxis: {
-        labels: { style: { colors: '#94a3b8', fontSize: '12px' } }
+        // Mencegah nilai desimal di sumbu Y
+        labels: {
+            style: { colors: '#94a3b8', fontSize: '12px' },
+            formatter: (val: number) => {
+                return val % 1 === 0 ? val.toFixed(0) : ''
+            }
+        },
+        // Memaksa min nilai dari 0 dan kelipatan bulat
+        min: 0,
+        forceNiceScale: true
     },
     tooltip: { y: { formatter: (val: number) => `${val} Pengaduan` } }
 }))
@@ -77,7 +90,7 @@ const statusLabels = computed(() => props.statusDistribution.map(item => item.la
 const statusChartOptions = computed(() => ({
     chart: { fontFamily: 'Plus Jakarta Sans, Inter, sans-serif' },
     labels: statusLabels.value,
-    colors: ['#eab308', '#f97316', '#3b82f6', '#10b981', '#ef4444', '#64748b'], 
+    colors: ['#eab308', '#f97316', '#3b82f6', '#10b981', '#ef4444'],
     legend: { position: 'bottom', fontSize: '12px', labels: { colors: '#475569' } },
     dataLabels: { enabled: true, dropShadow: { enabled: false } },
     plotOptions: {
@@ -101,11 +114,13 @@ const statusChartOptions = computed(() => ({
 </script>
 
 <template>
+
     <Head title="Dashboard Analitik" />
 
     <AdminLayout>
         <div class="space-y-6 max-w-7xl mx-auto px-1 animate-fade-in">
-            
+
+            <!-- HEADER -->
             <div class="border-b border-slate-100 pb-5">
                 <h1 class="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl flex items-center gap-2.5">
                     <Squares2X2Icon class="h-8 w-8 text-blue-600" />
@@ -116,45 +131,127 @@ const statusChartOptions = computed(() => ({
                 </p>
             </div>
 
-            <div class="grid gap-4 grid-cols-2 md:grid-cols-4 lg:grid-cols-8">
-                <div class="rounded-2xl border border-slate-100 bg-white p-4 shadow-sm shadow-slate-100/50">
-                    <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Total</p>
-                    <p class="text-2xl font-bold text-slate-900 mt-1">{{ stats.total }}</p>
+            <!-- HASIL REDESIGN CARD INFORMASI UTAMA -->
+            <div class="grid gap-5 lg:grid-cols-3">
+
+                <!-- SISI KIRI: 3 KARTU CORE UTAMA (Lebih Besar & Representatif) -->
+                <div class="lg:col-span-2 grid gap-4 sm:grid-cols-3">
+
+                    <!-- Total Pengaduan -->
+                    <div
+                        class="rounded-2xl border border-slate-100 bg-white p-5 shadow-xs flex flex-col justify-between hover:border-blue-200 transition-colors">
+                        <div>
+                            <div
+                                class="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-blue-600 border border-blue-100/50">
+                                <ClipboardDocumentListIcon class="h-5 w-5" />
+                            </div>
+                            <p class="text-xs font-bold uppercase tracking-wider text-slate-400 mt-4">Total Pengaduan
+                            </p>
+                            <p class="text-3xl font-black text-slate-900 mt-1">{{ stats.total }}</p>
+                        </div>
+                        <div class="text-[11px] font-medium text-slate-400 mt-4 pt-2 border-t border-slate-50">
+                            Seluruh berkas aduan masuk
+                        </div>
+                    </div>
+
+                    <!-- Rasio Penyelesaian -->
+                    <div
+                        class="rounded-2xl border border-slate-100 bg-white p-5 shadow-xs flex flex-col justify-between hover:border-emerald-200 transition-colors">
+                        <div>
+                            <div
+                                class="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-100/50">
+                                <CheckCircleIcon class="h-5 w-5" />
+                            </div>
+                            <p class="text-xs font-bold uppercase tracking-wider text-slate-400 mt-4">Rasio Penyelesaian
+                            </p>
+                            <p class="text-3xl font-black text-emerald-600 mt-1">{{ stats.completion_rate }}%</p>
+                        </div>
+                        <div class="text-[11px] font-medium text-slate-400 mt-4 pt-2 border-t border-slate-50">
+                            Berhasil diselesaikan penuh
+                        </div>
+                    </div>
+
+                    <!-- Rerata Waktu Solusi (Menampilkan string Jam & Menit murni dari Controller Anda) -->
+                    <div
+                        class="rounded-2xl border border-slate-100 bg-white p-5 shadow-xs flex flex-col justify-between hover:border-indigo-200 transition-colors">
+                        <div>
+                            <div
+                                class="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600 border border-indigo-100/50">
+                                <ClockIcon class="h-5 w-5" />
+                            </div>
+                            <p class="text-xs font-bold uppercase tracking-wider text-slate-400 mt-4">Rerata Solusi</p>
+                            <p class="text-lg font-extrabold text-slate-900 mt-2 truncate">{{ stats.avg_resolution_hours
+                                }}</p>
+                        </div>
+                        <div class="text-[11px] font-medium text-slate-400 mt-4 pt-2 border-t border-slate-50">
+                            Waktu respons penanganan
+                        </div>
+                    </div>
                 </div>
-                <div class="rounded-2xl border border-slate-100 bg-white p-4 shadow-sm shadow-slate-100/50 border-l-4 border-l-yellow-500">
-                    <p class="text-xs font-semibold uppercase tracking-wider text-yellow-600">Menunggu</p>
-                    <p class="text-2xl font-bold text-slate-900 mt-1">{{ stats.waiting }}</p>
+
+                <!-- SISI KANAN: STATUS PIPELINE BREAKDOWN (Menyatu dalam satu widget rapi) -->
+                <div class="rounded-2xl border border-slate-100 bg-white p-4 shadow-xs flex flex-col justify-between">
+                    <div class="grid grid-cols-5 gap-1.5 h-full">
+
+                        <!-- Menunggu -->
+                        <div
+                            class="flex flex-col items-center justify-center text-center rounded-xl bg-slate-50/50 border border-slate-100 p-2 hover:bg-yellow-50/40 hover:border-yellow-100 transition-colors">
+                            <span
+                                class="p-1.5 rounded-lg bg-yellow-50 text-yellow-600 border border-yellow-100/50 mb-1">
+                                <InboxIcon class="h-4 w-4" />
+                            </span>
+                            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wide">Tunggu</span>
+                            <span class="text-base font-extrabold text-slate-900 mt-0.5">{{ stats.waiting }}</span>
+                        </div>
+
+                        <!-- Ditinjau -->
+                        <div
+                            class="flex flex-col items-center justify-center text-center rounded-xl bg-slate-50/50 border border-slate-100 p-2 hover:bg-orange-50/40 hover:border-orange-100 transition-colors">
+                            <span
+                                class="p-1.5 rounded-lg bg-orange-50 text-orange-600 border border-orange-100/50 mb-1">
+                                <DocumentMagnifyingGlassIcon class="h-4 w-4" />
+                            </span>
+                            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wide">Tinjau</span>
+                            <span class="text-base font-extrabold text-slate-900 mt-0.5">{{ stats.under_review }}</span>
+                        </div>
+
+                        <!-- Diproses -->
+                        <div
+                            class="flex flex-col items-center justify-center text-center rounded-xl bg-slate-50/50 border border-slate-100 p-2 hover:bg-blue-50/40 hover:border-blue-100 transition-colors">
+                            <span class="p-1.5 rounded-lg bg-blue-50 text-blue-600 border border-blue-100/50 mb-1">
+                                <ArrowPathIcon class="h-4 w-4" />
+                            </span>
+                            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wide">Proses</span>
+                            <span class="text-base font-extrabold text-slate-900 mt-0.5">{{ stats.on_process }}</span>
+                        </div>
+
+                        <!-- Selesai -->
+                        <div
+                            class="flex flex-col items-center justify-center text-center rounded-xl bg-slate-50/50 border border-slate-100 p-2 hover:bg-emerald-50/40 hover:border-emerald-100 transition-colors">
+                            <span
+                                class="p-1.5 rounded-lg bg-emerald-50 text-emerald-600 border border-emerald-100/50 mb-1">
+                                <CheckCircleIcon class="h-4 w-4" />
+                            </span>
+                            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wide">Selesai</span>
+                            <span class="text-base font-extrabold text-emerald-700 mt-0.5">{{ stats.solved }}</span>
+                        </div>
+
+                        <!-- Ditolak -->
+                        <div
+                            class="flex flex-col items-center justify-center text-center rounded-xl bg-slate-50/50 border border-slate-100 p-2 hover:bg-red-50/40 hover:border-red-100 transition-colors">
+                            <span class="p-1.5 rounded-lg bg-red-50 text-red-600 border border-red-100/50 mb-1">
+                                <XCircleIcon class="h-4 w-4" />
+                            </span>
+                            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wide">Tolak</span>
+                            <span class="text-base font-extrabold text-red-600 mt-0.5">{{ stats.rejected }}</span>
+                        </div>
+
+                    </div>
                 </div>
-                <div class="rounded-2xl border border-slate-100 bg-white p-4 shadow-sm shadow-slate-100/50 border-l-4 border-l-orange-500">
-                    <p class="text-xs font-semibold uppercase tracking-wider text-orange-600">Ditinjau</p>
-                    <p class="text-2xl font-bold text-slate-900 mt-1">{{ stats.under_review }}</p>
-                </div>
-                <div class="rounded-2xl border border-slate-100 bg-white p-4 shadow-sm shadow-slate-100/50 border-l-4 border-l-blue-500">
-                    <p class="text-xs font-semibold uppercase tracking-wider text-blue-600">Diproses</p>
-                    <p class="text-2xl font-bold text-slate-900 mt-1">{{ stats.on_process }}</p>
-                </div>
-                <div class="rounded-2xl border border-slate-100 bg-white p-4 shadow-sm shadow-slate-100/50 border-l-4 border-l-emerald-500">
-                    <p class="text-xs font-semibold uppercase tracking-wider text-emerald-600">Selesai</p>
-                    <p class="text-2xl font-bold text-slate-900 mt-1">{{ stats.solved }}</p>
-                </div>
-                <div class="rounded-2xl border border-slate-100 bg-white p-4 shadow-sm shadow-slate-100/50 border-l-4 border-l-red-500">
-                    <p class="text-xs font-semibold uppercase tracking-wider text-red-600">Ditolak</p>
-                    <p class="text-2xl font-bold text-slate-900 mt-1">{{ stats.rejected }}</p>
-                </div>
-                <div class="rounded-2xl border border-slate-100 bg-white p-4 shadow-sm shadow-slate-100/50 flex flex-col justify-between">
-                    <p class="text-xs font-semibold uppercase tracking-wider text-slate-400 flex items-center gap-1">
-                        <ClockIcon class="h-3.5 w-3.5" /> Rerata Solusi
-                    </p>
-                    <p class="text-xl font-bold text-slate-900 mt-1">{{ stats.avg_resolution_hours }}<span class="text-xs font-normal text-slate-500 ml-0.5">jam</span></p>
-                </div>
-                <div class="rounded-2xl border border-slate-100 bg-white p-4 shadow-sm shadow-slate-100/50 flex flex-col justify-between">
-                    <p class="text-xs font-semibold uppercase tracking-wider text-slate-400 flex items-center gap-1">
-                        <CheckCircleIcon class="h-3.5 w-3.5" /> Penyelesaian
-                    </p>
-                    <p class="text-xl font-bold text-emerald-600 mt-1">{{ stats.completion_rate }}%</p>
-                </div>
+
             </div>
 
+            <!-- SEKSI GRAFIK -->
             <div class="grid gap-6 lg:grid-cols-2">
                 <div class="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm shadow-slate-100/50">
                     <div class="mb-4">
@@ -173,8 +270,10 @@ const statusChartOptions = computed(() => ({
                 </div>
             </div>
 
+            <!-- SEKSI TABEL DATA BAWAH -->
             <div class="grid gap-6 lg:grid-cols-3">
-                <div class="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm shadow-slate-100/50 flex flex-col justify-between lg:col-span-1">
+                <div
+                    class="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm shadow-slate-100/50 flex flex-col justify-between lg:col-span-1">
                     <div class="mb-4">
                         <h2 class="text-base font-bold text-slate-900 flex items-center gap-1.5">
                             <ChartBarIcon class="h-5 w-5 text-slate-500" /> Kategori Terbanyak
@@ -189,7 +288,8 @@ const statusChartOptions = computed(() => ({
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-slate-100">
-                                <tr v-for="item in topCategories" :key="item.category.name" class="hover:bg-slate-50/30 transition-colors">
+                                <tr v-for="item in topCategories" :key="item.category.name"
+                                    class="hover:bg-slate-50/30 transition-colors">
                                     <td class="px-4 py-3 text-slate-700 font-medium">{{ item.category.name }}</td>
                                     <td class="px-4 py-3 text-right font-bold text-slate-900">{{ item.total }}</td>
                                 </tr>
@@ -198,7 +298,8 @@ const statusChartOptions = computed(() => ({
                     </div>
                 </div>
 
-                <div class="rounded-2xl border border-slate-100 bg-white shadow-sm shadow-slate-100/50 lg:col-span-2 overflow-hidden flex flex-col justify-between">
+                <div
+                    class="rounded-2xl border border-slate-100 bg-white shadow-sm shadow-slate-100/50 lg:col-span-2 overflow-hidden flex flex-col justify-between">
                     <div class="p-5 border-b border-slate-100">
                         <h2 class="text-base font-bold text-slate-900 flex items-center gap-1.5">
                             <InboxIcon class="h-5 w-5 text-slate-500" /> Pengaduan Terbaru Masuk
@@ -216,8 +317,10 @@ const statusChartOptions = computed(() => ({
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-slate-100 bg-white">
-                                <tr v-for="complaint in latestComplaints" :key="complaint.id" class="hover:bg-slate-50/50 transition-colors">
-                                    <td class="px-5 py-3.5 font-mono font-semibold text-blue-600 text-xs tracking-wider">
+                                <tr v-for="complaint in latestComplaints" :key="complaint.id"
+                                    class="hover:bg-slate-50/50 transition-colors">
+                                    <td
+                                        class="px-5 py-3.5 font-mono font-semibold text-blue-600 text-xs tracking-wider">
                                         {{ complaint.tracking_code }}
                                     </td>
                                     <td class="px-5 py-3.5 text-slate-700 font-medium">
@@ -230,10 +333,8 @@ const statusChartOptions = computed(() => ({
                                         {{ formatDateTime(complaint.submitted_at) }}
                                     </td>
                                     <td class="px-5 py-3.5 text-right">
-                                        <Link 
-                                            :href="route('admin.complaints.show', complaint.id)"
-                                            class="inline-flex items-center gap-1 rounded-full px-2.5 py-1.5 text-xs font-bold text-blue-600 bg-blue-50 hover:bg-blue-100 hover:text-blue-700 transition-all"
-                                        >
+                                        <Link :href="route('admin.complaints.show', complaint.id)"
+                                            class="inline-flex items-center gap-1 rounded-full px-2.5 py-1.5 text-xs font-bold text-blue-600 bg-blue-50 hover:bg-blue-100 hover:text-blue-700 transition-all">
                                             <span>Detail</span>
                                             <ArrowTopRightOnSquareIcon class="h-3.5 w-3.5" />
                                         </Link>
@@ -253,8 +354,16 @@ const statusChartOptions = computed(() => ({
 .animate-fade-in {
     animation: fadeIn 0.4s ease-out forwards;
 }
+
 @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(6px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(6px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 </style>

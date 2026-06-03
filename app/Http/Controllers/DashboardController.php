@@ -74,12 +74,14 @@ class DashboardController extends Controller
             ],
         ];
 
-        $avgResolutionHours = Complaint::query()
+        $avgResolutionMinutes = Complaint::query()
             ->whereNotNull('solved_at')
             ->selectRaw(
-                'AVG(TIMESTAMPDIFF(HOUR, submitted_at, solved_at)) as avg_time'
+                'AVG(TIMESTAMPDIFF(MINUTE, submitted_at, solved_at)) as avg_time'
             )
             ->value('avg_time');
+
+        $avgResolutionMinutes = (int) round($avgResolutionMinutes ?? 0);
 
         $solvedThisMonth = Complaint::query()
             ->where('status', ComplaintStatus::SOLVED)
@@ -129,10 +131,11 @@ class DashboardController extends Controller
                         ComplaintStatus::REJECTED
                     )->count(),
 
-                    'avg_resolution_hours' => round(
-                        $avgResolutionHours ?? 0,
-                        1
-                    ),
+                    'avg_resolution_hours' =>
+                        floor($avgResolutionMinutes / 60) .
+                        ' jam ' .
+                        ($avgResolutionMinutes % 60) .
+                        ' menit',
 
                     'solved_this_month' => $solvedThisMonth,
 
