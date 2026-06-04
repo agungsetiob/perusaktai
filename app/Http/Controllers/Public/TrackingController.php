@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Public;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 use App\Models\Complaint;
@@ -25,7 +24,7 @@ class TrackingController extends Controller
             ])
             ->first();
 
-        if (! $complaint) {
+        if (!$complaint) {
             return Inertia::render('Public/Tracking/Index', [
                 'errorMessage' => 'Kode tracking tidak ditemukan',
                 'old' => [
@@ -36,6 +35,15 @@ class TrackingController extends Controller
 
         return Inertia::render('Public/Tracking/Result', [
             'complaint' => $complaint,
+        ]);
+    }
+
+    public function embedLayanan(): Response
+    {
+        $targetUrl = 'https://web-rsud.test/dokter/jadwal';
+
+        return Inertia::render('Public/EmbedJadwalDokter', [
+            'targetUrl' => $targetUrl
         ]);
     }
 }

@@ -28,8 +28,8 @@ class UserSeeder extends Seeder
 
         // 2. Data untuk Role: supervisor
         DB::table('users')->insert([
-            'name' => 'Budi Supervisor',
-            'email' => 'supervisor@example.com',
+            'name' => 'Budi Humas',
+            'email' => 'kasubbag@example.com',
             'role' => 'supervisor',
             'email_verified_at' => now(),
             'password' => Hash::make('password123'),

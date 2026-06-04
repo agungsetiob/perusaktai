@@ -4,7 +4,8 @@ import {
     PencilSquareIcon,
     MagnifyingGlassIcon,
     ArrowRightEndOnRectangleIcon,
-    UserIcon
+    UserIcon,
+    CalendarIcon
 } from '@heroicons/vue/24/outline'
 
 const page = usePage()
@@ -18,7 +19,7 @@ const user = page.props.auth?.user
 
         <!-- Header / Navbar -->
         <header class="sticky top-0 z-50 border-b border-slate-100 bg-white/80 backdrop-blur-md shadow-sm">
-            <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div class="mx-auto max-w-full px-4 sm:px-6 lg:px-8">
                 <div class="flex h-16 items-center justify-between gap-4">
 
                     <div className="flex items-center gap-3 min-w-0">
@@ -30,7 +31,7 @@ const user = page.props.auth?.user
                                 <span class="text-gray-400 font-light hidden sm:inline">|</span>
                                 <span
                                     class="p-1 font-brand italic text-2xl font-extrabold tracking-tight bg-gradient-to-r from-amber-500 via-blue-500 to-blue-600 bg-clip-text text-transparent hidden sm:inline">
-                                    PERUSAKTAI
+                                    RAJAPATEN AI
                                 </span>
                             </Link>
 
@@ -50,6 +51,13 @@ const user = page.props.auth?.user
                                 ? 'bg-blue-50 text-blue-600 font-semibold'
                                 : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'">
                             Tracking
+                        </Link>
+
+                        <Link href="/jadwal-dokter"
+                            class="rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200" :class="isActive('/jadwal-dokter')
+                                ? 'bg-blue-50 text-blue-600 font-semibold'
+                                : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'">
+                            Jadwal Dokter
                         </Link>
 
                         <span class="h-4 w-px bg-slate-200 mx-1"></span>
@@ -94,10 +102,10 @@ const user = page.props.auth?.user
         </main>
 
         <!-- FOOTER (Fleksibel: Menambahkan padding-bottom di mobile agar tidak tertutup Menu Bawah) -->
-        <footer class="border-t border-slate-100 bg-white pb-24 sm:pb-6 mt-auto">
-            <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+        <footer class="border-t border-slate-200 bg-white pb-16 sm:pb-6 mt-auto">
+            <div class="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
                 <div class="flex items-center justify-center text-center text-sm text-slate-500">
-                    © 2026 <span class="font-semibold text-slate-700 mx-1">PERUSAKTAI</span> Hak Cipta Dilindungi.
+                    © 2026 <span class="font-semibold text-slate-700 mx-1">RAJAPATEN AI</span> Hak Cipta Dilindungi.
                 </div>
             </div>
         </footer>
@@ -118,6 +126,13 @@ const user = page.props.auth?.user
                 :class="isActive('/tracking') ? 'text-blue-600 font-bold' : 'text-slate-400'">
                 <MagnifyingGlassIcon class="h-5 w-5" :class="isActive('/tracking') ? 'stroke-2' : ''" />
                 <span class="text-[10px] tracking-tight">Lacak Status</span>
+            </Link>
+
+            <!-- Tab: Jadwal Dokter -->
+            <Link href="/jadwal-dokter" class="flex flex-col items-center gap-1 px-3 py-1 transition-colors"
+                :class="isActive('/jadwal-dokter') ? 'text-blue-600 font-bold' : 'text-slate-400'">
+                <CalendarIcon class="h-5 w-5" :class="isActive('/jadwal-dokter') ? 'stroke-2' : ''" />
+                <span class="text-[10px] tracking-tight">Jadwal Dokter</span>
             </Link>
 
         </div>

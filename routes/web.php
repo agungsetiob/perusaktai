@@ -31,6 +31,8 @@ Route::post('/complaints', [ComplaintController::class, 'store'])->name('complai
 Route::get('/complaints/success/{trackingCode}', [ComplaintController::class, 'success'])->name('complaints.success');
 Route::get('/tracking', [TrackingController::class, 'index'])->name('tracking.index');
 Route::get('/tracking/{tracking_code}', [TrackingController::class, 'show'])->name('tracking.show');
+Route::get('/jadwal-dokter', [TrackingController::class, 'embedLayanan'])
+    ->name('public.embed-jadwal-dokter');
 
 /*
 |--------------------------------------------------------------------------
