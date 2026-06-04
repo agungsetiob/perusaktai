@@ -53,7 +53,7 @@ async function sendMessage() {
 </script>
 
 <template>
-    <div class="fixed bottom-6 right-6 z-50 font-sans flex flex-col items-end">
+    <div class="fixed bottom-1 right-1 z-50 font-sans flex flex-col items-end">
         
         <div 
             v-if="isOpen" 
@@ -63,8 +63,7 @@ async function sendMessage() {
                 <div class="flex items-center gap-2">
                     <ChatBubbleLeftRightIcon class="h-5 w-5 text-blue-600" />
                     <div>
-                        <h3 class="text-xs font-bold text-slate-700 uppercase tracking-wider">Asisten Analisis AI</h3>
-                        <p class="text-[10px] text-slate-400 font-medium mt-0.5">Diskusikan solusi & SOP aduan</p>
+                        <h3 class="text-xs font-bold text-slate-700 uppercase tracking-wider">Asisten AI</h3>
                     </div>
                 </div>
                 <button 
@@ -96,7 +95,7 @@ async function sendMessage() {
                 <div v-if="isLoading" class="flex justify-start">
                     <div class="bg-white border border-slate-100 rounded-xl rounded-tl-none px-3 py-2 shadow-2xs flex items-center gap-2 text-slate-400 text-xs font-medium">
                         <ArrowPathIcon class="h-3.5 w-3.5 animate-spin text-blue-500" />
-                        <span>Gemini sedang menganalisis...</span>
+                        <span>AI sedang menganalisis...</span>
                     </div>
                 </div>
             </div>
