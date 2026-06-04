@@ -25,7 +25,7 @@ const props = defineProps<{
         on_process: number
         solved: number
         rejected: number
-        avg_resolution_hours: string | number // Tetap asli sesuai modifikasi controller Anda
+        avg_resolution_hours: string | number
         solved_this_month: number
         completion_rate: number
     }
@@ -118,7 +118,7 @@ const statusChartOptions = computed(() => ({
     <Head title="Dashboard Analitik" />
 
     <AdminLayout>
-        <div class="space-y-6 max-w-7xl mx-auto px-1 animate-fade-in">
+        <div class="space-y-5 animate-fade-in">
 
             <!-- HEADER -->
             <div class="border-b border-slate-100 pb-5">

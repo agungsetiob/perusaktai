@@ -25,7 +25,6 @@ const page = usePage<PageProps & {
     }
 }>()
 
-// 2. Buat computed properti untuk validasi role Super Admin secara aman
 const isSuperAdmin = computed(() => page.props.auth.user?.role === 'super_admin')
 
 // State untuk Modal Form (Tambah/Edit)
@@ -82,7 +81,7 @@ function handleDeactivate() {
     <Head title="Kategori Pengaduan" />
 
     <AdminLayout>
-        <div class="space-y-5">
+        <div class="space-y-5 animate-fade-in">
 
             <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between border-b border-slate-200 pb-4">
                 <div class="flex items-center gap-2.5">
@@ -243,3 +242,20 @@ function handleDeactivate() {
 
     </AdminLayout>
 </template>
+<style scoped>
+.animate-fade-in {
+    animation: fadeIn 0.4s ease-out forwards;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(6px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+</style>

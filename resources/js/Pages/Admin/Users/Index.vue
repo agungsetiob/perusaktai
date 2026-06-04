@@ -27,11 +27,11 @@ const props = defineProps<{
     users: User[]
 }>()
 
-// State untuk Modal Form (Tambah/Edit)
+// State untuk Modal Form
 const showModal = ref(false)
 const selectedUser = ref<User | null>(null)
 
-// State untuk Modal Konfirmasi Nonaktifkan (Disamakan dengan pola Kategori)
+// State untuk Modal Konfirmasi Nonaktifkan
 const showDeactivateModal = ref(false)
 const userToDeactivate = ref<User | null>(null)
 const isDeactivating = ref(false)
@@ -57,7 +57,7 @@ function closeDeactivateModal() {
     userToDeactivate.value = null
 }
 
-// Fungsi eksekusi final (Pola penulisan rapi sesuai modul kategori)
+// Fungsi eksekusi final
 function handleDeactivate() {
     if (!userToDeactivate.value) return
 
@@ -86,9 +86,9 @@ const formatRole = (role: string) => {
     <Head title="Manajemen User" />
 
     <AdminLayout>
-        <div class="space-y-6 max-w-7xl mx-auto px-1 animate-fade-in">
+        <div class="space-y-5 animate-fade-in">
             
-            <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between border-b border-slate-100 pb-5">
+            <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between border-b border-slate-100 pb-5">
                 <div>
                     <h1 class="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
                         Manajemen Pengguna

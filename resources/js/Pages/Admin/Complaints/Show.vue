@@ -10,6 +10,7 @@ import SolveComplaintCard from './Partials/SolveComplaintCard.vue'
 import RejectComplaintCard from './Partials/RejectComplaintCard.vue'
 import AttachmentPreviewModal from '@/Components/AttachmentPreviewModal.vue'
 import { formatDateTime } from '@/utils/date.js'
+import type { User } from '@/types'
 
 const showAttachmentModal = ref(false)
 const selectedAttachment = ref(null)
@@ -19,7 +20,6 @@ function openAttachment(file: any) {
     showAttachmentModal.value = true
 }
 
-// Import Heroicons
 import {
     QrCodeIcon,
     UserIcon,
@@ -38,7 +38,7 @@ const props = defineProps<{
 }>()
 
 const page = usePage()
-const user = page.props.auth.user
+const user = page.props.auth.user as User
 </script>
 
 <template>

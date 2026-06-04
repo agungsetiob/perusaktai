@@ -49,7 +49,7 @@ class ComplaintResponseService
                 'user_id' => $actor->id,
                 'old_status' => $oldStatus,
                 'new_status' => ComplaintStatus::UNDER_REVIEW,
-                'note' => 'Solusi diajukan untuk direview supervisor',
+                'note' => 'Solusi diajukan untuk direview manajemen',
             ]);
 
             $this->auditLog->log(

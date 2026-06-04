@@ -5,8 +5,6 @@ import { formatDateTime } from '@/utils/date'
 import AdminLayout from '@/Layouts/AdminLayout.vue'
 import StatusBadge from '@/Components/StatusBadge.vue'
 import Pagination from '@/Components/Pagination.vue'
-
-// Import Ikon Heroicons
 import {
     FunnelIcon,
     MagnifyingGlassIcon,
@@ -55,7 +53,7 @@ function resetFilter() {
     <Head title="Daftar Pengaduan" />
 
     <AdminLayout>
-        <div class="space-y-6 max-w-7xl mx-auto px-1">
+        <div class="space-y-5 animate-fade-in">
 
             <!-- PAGE HEADER & PANEL EXPORT PDF -->
             <div class="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between border-b border-slate-100 pb-5">
@@ -237,3 +235,20 @@ function resetFilter() {
         </div>
     </AdminLayout>
 </template>
+<style scoped>
+.animate-fade-in {
+    animation: fadeIn 0.4s ease-out forwards;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(6px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+</style>

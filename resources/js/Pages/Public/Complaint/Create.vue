@@ -41,7 +41,7 @@ function handleFiles(event: Event) {
             <!-- Header Form Section -->
             <div class="mb-6 text-center sm:text-left">
                 <h1 class="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
-                    Form Sampaikan Pengaduan
+                    Form Pengaduan
                 </h1>
                 <p class="mt-1.5 text-sm text-gray-500">
                     Silakan isi form di bawah ini dengan data yang valid demi kenyamanan dan kecepatan proses penanganan.

@@ -2,18 +2,19 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\Facades\Vite;
-use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\ServiceProvider;
 use App\Models\Complaint;
 use App\Models\ComplaintCategory;
 use App\Models\ComplaintResponse;
 use App\Models\User;
-
 use App\Policies\ComplaintPolicy;
 use App\Policies\ComplaintCategoryPolicy;
 use App\Policies\ComplaintResponsePolicy;
 use App\Policies\UserPolicy;
+use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Vite;
+use Illuminate\Support\Facades\Gate;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -51,5 +52,12 @@ class AppServiceProvider extends ServiceProvider
             User::class,
             UserPolicy::class
         );
+
+        if (App::environment('local')) {
+        // Paksa semua HttpClient bawaan Laravel & Package untuk mengabaikan SSL peer verification
+        Http::globalOptions([
+            'verify' => false,
+        ]);
+    }
     }
 }

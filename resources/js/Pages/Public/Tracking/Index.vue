@@ -51,7 +51,7 @@ function submit() {
               <input
                 v-model="tracking_code"
                 type="text"
-                placeholder="Contoh: RS-20260601-ABC123"
+                placeholder="Contoh: DHAAN-20260604-0NE1BZ6"
                 class="w-full rounded-xl border border-slate-300 bg-slate-50/50 px-4 py-3 pl-11 text-center font-mono text-base font-bold tracking-wider text-slate-800 outline-none transition-all focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-500/20"
               >
               <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5">
