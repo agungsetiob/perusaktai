@@ -1,1 +1,2 @@
 *.sqlite*
+migrations/2026_06_01_050024_create_complaints_table.php
