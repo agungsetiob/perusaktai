@@ -20,14 +20,6 @@ defineProps<{
                     sandbox="allow-scripts allow-same-origin allow-forms"
                     loading="lazy"
                 >
-                    <div class="flex flex-col items-center justify-center h-full p-6 text-center">
-                        <p class="text-sm font-medium text-slate-500">
-                            Browser Anda tidak mendukung penayangan langsung halaman ini.
-                        </p>
-                        <a :href="targetUrl" target="_blank" class="mt-2 text-xs font-bold text-blue-600 underline">
-                            Klik di sini untuk membuka halaman secara langsung.
-                        </a>
-                    </div>
                 </iframe>
             </div>
 

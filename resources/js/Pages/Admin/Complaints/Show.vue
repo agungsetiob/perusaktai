@@ -9,6 +9,7 @@ import ReviewSolutionCard from './Partials/ReviewSolutionCard.vue'
 import SolveComplaintCard from './Partials/SolveComplaintCard.vue'
 import RejectComplaintCard from './Partials/RejectComplaintCard.vue'
 import AttachmentPreviewModal from '@/Components/AttachmentPreviewModal.vue'
+import ComplaintAiChatCard from '@/Components/ComplaintAiChatCard.vue'
 import { formatDateTime } from '@/utils/date.js'
 import type { User } from '@/types'
 
@@ -48,7 +49,7 @@ const user = page.props.auth.user as User
     <AdminLayout>
         <div class="space-y-5">
 
-            <!-- 1. TOP HEADER PANEL -->
+            <!-- TOP HEADER PANEL -->
             <div class="overflow-hidden rounded-xl border border-slate-200 bg-white p-5 shadow-sm relative">
                 <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-600 to-indigo-500"></div>
 
@@ -100,7 +101,7 @@ const user = page.props.auth.user as User
                                 <div class="rounded-lg bg-slate-50/60 border border-slate-100 p-3">
                                     <span
                                         class="block text-[10px] font-bold uppercase tracking-wide text-slate-400 mb-0.5">Nama
-                                        Lengkap</span>
+                                    </span>
                                     <div class="flex items-center gap-1.5 text-xs font-semibold text-slate-800">
                                         <UserIcon class="h-3.5 w-3.5 text-slate-400" />
                                         <span>{{ complaint.name }}</span>
@@ -117,8 +118,7 @@ const user = page.props.auth.user as User
                                 </div>
                                 <div class="rounded-lg bg-slate-50/60 border border-slate-100 p-3">
                                     <span
-                                        class="block text-[10px] font-bold uppercase tracking-wide text-slate-400 mb-0.5">NIK
-                                        KTP</span>
+                                        class="block text-[10px] font-bold uppercase tracking-wide text-slate-400 mb-0.5">NIK</span>
                                     <div class="flex items-center gap-1.5 text-xs font-semibold text-slate-800">
                                         <IdentificationIcon class="h-3.5 w-3.5 text-slate-400" />
                                         <span class="font-mono">{{ complaint.nik }}</span>
@@ -132,7 +132,7 @@ const user = page.props.auth.user as User
                     <div class="rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden">
                         <div class="flex items-center gap-2 border-b border-slate-100 px-5 py-3.5 bg-slate-50/50">
                             <DocumentTextIcon class="h-4 w-4 text-slate-400" />
-                            <h2 class="font-bold text-slate-700 text-xs uppercase tracking-wider">Isi Laporan Kronologi
+                            <h2 class="font-bold text-slate-700 text-xs uppercase tracking-wider">Isi Pengaduan
                             </h2>
                         </div>
                         <div class="p-5">
@@ -145,7 +145,6 @@ const user = page.props.auth.user as User
 
                     <!-- KARTU FILE LAMPIRAN BUKTI -->
                     <div class="rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden">
-                        <!-- Header Kartu -->
                         <div class="flex items-center gap-2 border-b border-slate-100 px-5 py-3.5 bg-slate-50/50">
                             <PaperClipIcon class="h-4 w-4 text-slate-400" />
                             <h2 class="font-bold text-slate-700 text-xs uppercase tracking-wider">Lampiran Berkas Bukti
@@ -160,26 +159,22 @@ const user = page.props.auth.user as User
                                     class="group flex items-center justify-between w-full text-left rounded-lg border border-slate-200 bg-white p-3 shadow-sm hover:border-blue-300 hover:bg-blue-50/20 active:scale-[0.99] transition-all duration-200"
                                     @click="openAttachment(file)">
                                     <div class="flex items-center gap-2.5 min-w-0">
-                                        <!-- Badge Ekstensi File Dinamis (Visual Indikator) -->
+                                        <!-- Badge Ekstensi File Dinamis -->
                                         <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-slate-100 text-[10px] font-extrabold uppercase tracking-wider group-hover:bg-blue-100 transition-colors"
                                             :class="file.original_name.split('.').pop() === 'pdf' ? 'text-red-600' : 'text-blue-600'">
                                             {{ file.original_name.split('.').pop() }}
                                         </div>
 
-                                        <!-- Detail Nama File -->
                                         <div class="min-w-0">
                                             <p class="truncate text-xs font-semibold text-slate-700 group-hover:text-blue-700 transition-colors"
                                                 :title="file.original_name">
                                                 {{ file.original_name }}
                                             </p>
-                                            <span class="block text-[10px] text-slate-400 font-medium mt-0.5">Klik untuk
-                                                meninjau berkas</span>
                                         </div>
                                     </div>
                                 </button>
                             </div>
 
-                            <!-- State Jika Kosong -->
                             <div v-else class="flex items-center gap-2 text-slate-400 text-xs py-1">
                                 <span class="text-slate-300">✕</span>
                                 <span class="font-medium">Tidak ada dokumen atau lampiran.</span>
@@ -219,7 +214,7 @@ const user = page.props.auth.user as User
                         <ComplaintStatusTimeline :logs="complaint.status_logs" />
                     </div>
 
-                    <!-- KARTU PANEL KENDALI AKSI OPERATOR -->
+                    <!-- KARTU PANEL AKSI OPERATOR -->
                     <div v-if="
                         (complaint.status === 'waiting' && (user.role === 'admin' || user.role === 'super_admin')) ||
                         (complaint.status === 'under_review' && (user.role === 'supervisor' || user.role === 'super_admin')) ||
@@ -259,5 +254,7 @@ const user = page.props.auth.user as User
         </div>
         <AttachmentPreviewModal :show="showAttachmentModal" :file="selectedAttachment"
             @close="showAttachmentModal = false" />
+        <!-- PENEMPATAN KARTU CHAT ASSISTANT AI INTERNAL -->
+        <ComplaintAiChatCard :complaint-id="complaint.id" />
     </AdminLayout>
 </template>

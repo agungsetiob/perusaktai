@@ -57,11 +57,13 @@ Route::middleware(['auth', 'active', 'role:admin,supervisor,super_admin'])
         // Dashboard & Notifikasi
         Route::get('/dashboard', DashboardController::class)->name('dashboard');
         Route::post('/notifications/{notification}/read', [NotificationController::class, 'read'])
-        ->name('notifications.read');
+            ->name('notifications.read');
         Route::post('/notifications/read-all', [NotificationController::class, 'readAll'])->name('notifications.readAll');
 
         Route::post('/ai-suggestion/complaints/{complaint}', [ComplaintResponseController::class, 'aiSuggestion'])
-        ->name('complaints.ai-suggestion');
+            ->name('complaints.ai-suggestion');
+        Route::post('/complaints/{complaint}/ai-chat', [ComplaintResponseController::class, 'aiChat'])
+            ->name('admin.complaints.ai-chat');
 
         // Manajemen Kategori & Laporan Cetak PDF (SLA)
         Route::resource('categories', ComplaintCategoryController::class)->except(['show', 'create', 'edit']);
@@ -72,15 +74,15 @@ Route::middleware(['auth', 'active', 'role:admin,supervisor,super_admin'])
 
         // Respon Pengaduan (Alur Kerja Operasional harian Admin & Supervisor)
         Route::post('/complaints/{complaint}/responses', [ComplaintResponseController::class, 'store'])
-        ->name('complaints.responses.store');
+            ->name('complaints.responses.store');
         Route::post('/responses/{response}/approve', [ComplaintResponseController::class, 'approve'])
-        ->name('responses.approve')->middleware(['role:supervisor,super_admin']);
+            ->name('responses.approve')->middleware(['role:supervisor,super_admin']);
         Route::post('/responses/{response}/reject', [ComplaintResponseController::class, 'reject'])
-        ->name('responses.reject')->middleware(['role:supervisor,super_admin']);
+            ->name('responses.reject')->middleware(['role:supervisor,super_admin']);
         Route::post('/complaints/{complaint}/reject', [ComplaintResponseController::class, 'rejectComplaint'])
-        ->name('complaints.reject')->middleware(['role:supervisor,super_admin']);
+            ->name('complaints.reject')->middleware(['role:supervisor,super_admin']);
         Route::post('/complaints/{complaint}/solve', [ComplaintResponseController::class, 'solve'])
-        ->name('complaints.solve');
+            ->name('complaints.solve');
 
         /*
         |------------------------------------------------------------------

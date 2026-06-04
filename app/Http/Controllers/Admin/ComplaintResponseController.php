@@ -13,6 +13,7 @@ use App\Services\AiSolutionService;
 use App\Services\ComplaintResponseService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class ComplaintResponseController extends Controller
 {
@@ -134,6 +135,23 @@ class ComplaintResponseController extends Controller
         return response()->json([
             'success' => true,
             'suggestion' => $suggestion,
+        ]);
+    }
+
+    public function aiChat(
+        Complaint $complaint,
+        Request $request,
+        AiSolutionService $ai
+    ): JsonResponse {
+        $request->validate([
+            'message' => 'required|string|max:1500',
+        ]);
+
+        $reply = $ai->chatConversation($complaint, $request->input('message'));
+
+        return response()->json([
+            'success' => true,
+            'reply' => $reply,
         ]);
     }
 }
