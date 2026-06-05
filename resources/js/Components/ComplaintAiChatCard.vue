@@ -53,7 +53,7 @@ async function sendMessage() {
 </script>
 
 <template>
-    <div class="fixed bottom-1 right-1 z-50 font-sans flex flex-col items-end">
+    <div class="fixed bottom-4 right-4 z-50 font-sans flex flex-col items-end">
         
         <div 
             v-if="isOpen" 

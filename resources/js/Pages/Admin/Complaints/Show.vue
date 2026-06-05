@@ -255,6 +255,8 @@ const user = page.props.auth.user as User
         <AttachmentPreviewModal :show="showAttachmentModal" :file="selectedAttachment"
             @close="showAttachmentModal = false" />
         <!-- PENEMPATAN KARTU CHAT ASSISTANT AI INTERNAL -->
-        <ComplaintAiChatCard :complaint-id="complaint.id" />
+        <template #floating-chat>
+            <ComplaintAiChatCard :complaint-id="complaint.id" />
+        </template>
     </AdminLayout>
 </template>

@@ -7,21 +7,29 @@ use App\Enums\ResponseApprovalStatus;
 use App\Models\Complaint;
 use App\Models\ComplaintResponse;
 use App\Models\User;
+use App\Models\WhatsappLog;
 use App\Notifications\SolutionSubmittedNotification;
 use App\Notifications\SolutionApprovedNotification;
 use App\Notifications\SolutionRejectedNotification;
 use App\Notifications\ComplaintRejectedNotification;
 use App\Services\AuditLogService;
+use App\Services\FonnteService;
+use App\Support\PhoneFormatter;
+use App\Notifications\WhatsappNotification;
 use Illuminate\Support\Facades\DB;
 
 class ComplaintResponseService
 {
     private AuditLogService $auditLog;
 
-    public function __construct(AuditLogService $auditLog)
-    {
+    public function __construct(
+        AuditLogService $auditLog,
+        FonnteService $fonnte
+    ) {
         $this->auditLog = $auditLog;
+        $this->fonnte = $fonnte;
     }
+    private FonnteService $fonnte;
 
     public function submitSolution(
         Complaint $complaint,
@@ -182,7 +190,7 @@ class ComplaintResponseService
                 ->notify(
                     new SolutionRejectedNotification(
                         $complaint,
-                        $actor  
+                        $actor
                     )
                 );
         });
@@ -277,6 +285,69 @@ class ComplaintResponseService
                     'solved_at' => now(),
                 ],
             );
+
+            if (
+                !$complaint->is_anonymous &&
+                $complaint->phone
+            ) {
+                $solution = $complaint
+                    ->responses()
+                    ->where('approval_status', 'approved')
+                    ->latest()
+                    ->first()?->solution ?? '-';
+
+                $message = <<<TEXT
+                    🏥 *Pemberitahuan Penyelesaian Pengaduan*
+
+                    Yth. {$complaint->name},
+
+                    Pengaduan yang Anda sampaikan telah selesai ditindaklanjuti.
+
+                    📋 Nomor Pengaduan:
+                    {$complaint->tracking_code}
+
+                    💬 Hasil Tindak Lanjut:
+                    {$solution}
+
+                    Apabila masih terdapat hal yang perlu dikonfirmasi, silakan menghubungi petugas layanan pengaduan.
+
+                    Terima kasih atas masukan yang telah Anda berikan untuk peningkatan mutu pelayanan rumah sakit.
+
+                    Hormat kami,
+
+                    *Tim Pengelola Pengaduan*
+                    TEXT;
+
+                $result = $this->fonnte->send(
+                    $complaint->phone,
+                    $message
+                );
+
+                WhatsappLog::create([
+                    'complaint_id' => $complaint->id,
+                    'phone' => $complaint->phone,
+                    'message' => $message,
+                    'status' => $result['success']
+                        ? 'success'
+                        : 'failed',
+                    'response' => json_encode(
+                        $result['body']
+                    ),
+                    'sent_at' => now(),
+                ]);
+                $this->auditLog->log(
+                    module: 'whatsapp',
+                    action: 'Send Notification',
+                    subject: $complaint,
+                    description: "Mengirim notifikasi WhatsApp penyelesaian pengaduan {$complaint->tracking_code}",
+                    newValues: [
+                        'phone' => $complaint->phone,
+                        'status' => $result['success']
+                            ? 'success'
+                            : 'failed',
+                    ]
+                );
+            }
         });
     }
 }

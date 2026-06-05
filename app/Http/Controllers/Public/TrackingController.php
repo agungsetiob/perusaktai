@@ -20,7 +20,24 @@ class TrackingController extends Controller
             ->where('tracking_code', $tracking_code)
             ->with([
                 'category:id,name',
+
                 'statusLogs:id,complaint_id,old_status,new_status,note,created_at',
+
+                'responses' => function ($query) {
+                    $query
+                        ->select(
+                            'id',
+                            'complaint_id',
+                            'solution',
+                            'approval_status',
+                            'created_at'
+                        )
+                        ->where(
+                            'approval_status',
+                            \App\Enums\ResponseApprovalStatus::APPROVED
+                        )
+                        ->latest();
+                },
             ])
             ->first();
 

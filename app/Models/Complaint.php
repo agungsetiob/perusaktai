@@ -53,4 +53,11 @@ class Complaint extends Model
             ComplaintResponse::class
         )->latestOfMany();
     }
+
+    public function whatsappLogs()
+    {
+        return $this->hasMany(
+            WhatsappLog::class
+        );
+    }
 }

@@ -60,6 +60,7 @@ Route::middleware(['auth', 'active', 'role:admin,supervisor,super_admin'])
             ->name('notifications.read');
         Route::post('/notifications/read-all', [NotificationController::class, 'readAll'])->name('notifications.readAll');
 
+        // AI Asistant
         Route::post('/ai-suggestion/complaints/{complaint}', [ComplaintResponseController::class, 'aiSuggestion'])
             ->name('complaints.ai-suggestion');
         Route::post('/complaints/{complaint}/ai-chat', [ComplaintResponseController::class, 'aiChat'])

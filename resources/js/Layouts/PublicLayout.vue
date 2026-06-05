@@ -102,10 +102,10 @@ const user = page.props.auth?.user
         </main>
 
         <!-- FOOTER -->
-        <footer class="hidden sm:block border-t border-slate-200 bg-white pb-16 sm:pb-6 mt-auto">
+        <footer class="hidden sm:block border-t border-slate-200 bg-white mt-auto">
             <div class="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
                 <div class="flex items-center justify-center text-center text-sm text-slate-500">
-                    © 2026 <span class="font-semibold text-slate-700 mx-1">RAJAPATEN AI</span> Hak Cipta Dilindungi.
+                    © {{ new Date().getFullYear() }} <span class="font-semibold text-slate-700 mx-1">RAJAPATEN AI</span> Hak Cipta Dilindungi.
                 </div>
             </div>
         </footer>

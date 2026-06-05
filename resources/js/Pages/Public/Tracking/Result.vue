@@ -3,12 +3,12 @@ import { Head } from '@inertiajs/vue3'
 import PublicLayout from '@/Layouts/PublicLayout.vue'
 import StatusBadge from '@/Components/StatusBadge.vue'
 import ComplaintStatusTimeline from '@/Components/ComplaintStatusTimeline.vue'
+import { formatDateTime } from '@/utils/date'
 
-// Import Heroicons untuk detail informasi
-import { 
-    QrCodeIcon, 
-    CalendarDaysIcon, 
-    TagIcon, 
+import {
+    QrCodeIcon,
+    CalendarDaysIcon,
+    TagIcon,
     DocumentTextIcon,
     ClockIcon
 } from '@heroicons/vue/24/outline'
@@ -29,46 +29,34 @@ defineProps<{
             note: string
             created_at: string
         }>
+        responses: Array<{
+            id: number
+            solution: string
+            approval_status: string
+            created_at: string
+        }>
     }
 }>()
 
-// Fungsi pemformatan tanggal rapi Indonesia (Tanpa kata "pukul")
-function formatDate(dateString: string) {
-    if (!dateString) return '-'
-    const date = new Date(dateString)
-    if (isNaN(date.getTime())) return dateString 
-
-    const formattedDate = new Intl.DateTimeFormat('id-ID', {
-        day: 'numeric',
-        month: 'long',
-        year: 'numeric',
-    }).format(date)
-
-    const formattedTime = new Intl.DateTimeFormat('id-ID', {
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: false
-    }).format(date)
-
-    return `${formattedDate}, ${formattedTime}`
-}
 </script>
 
 <template>
+
     <Head title="Hasil Tracking Pengaduan" />
 
     <PublicLayout>
         <div class="mx-auto max-w-5xl px-4">
-            
+
             <div class="mb-6 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                     <h1 class="text-2xl font-bold tracking-tight text-slate-900">Progres Penanganan Aduan</h1>
-                    <p class="text-sm text-slate-500">Lembar transparansi pelacakan keluhan yang diajukan oleh masyarakat.</p>
+                    <p class="text-sm text-slate-500">Lembar transparansi pelacakan keluhan yang diajukan oleh
+                        masyarakat.</p>
                 </div>
             </div>
 
             <div class="grid gap-6 md:grid-cols-3 items-start">
-                
+
                 <div class="space-y-6 md:col-span-2">
                     <div class="overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-sm relative">
                         <div class="absolute top-0 left-0 right-0 h-1.5 bg-blue-600"></div>
@@ -84,7 +72,8 @@ function formatDate(dateString: string) {
                         <div class="p-6 space-y-5">
                             <div class="grid gap-4 sm:grid-cols-2">
                                 <div class="rounded-xl border border-slate-100 bg-slate-50/50 p-3.5">
-                                    <div class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">
+                                    <div
+                                        class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">
                                         <QrCodeIcon class="h-4 w-4 text-slate-400" />
                                         Kode Tracking
                                     </div>
@@ -94,7 +83,8 @@ function formatDate(dateString: string) {
                                 </div>
 
                                 <div class="rounded-xl border border-slate-100 bg-slate-50/50 p-3.5">
-                                    <div class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">
+                                    <div
+                                        class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">
                                         <TagIcon class="h-4 w-4 text-slate-400" />
                                         Kategori / Jenis aduan
                                     </div>
@@ -104,11 +94,14 @@ function formatDate(dateString: string) {
                                 </div>
                             </div>
 
-                            <div class="flex items-center gap-2.5 text-sm text-slate-600 border-b border-slate-100 pb-4">
+                            <div
+                                class="flex items-center gap-2.5 text-sm text-slate-600 border-b border-slate-100 pb-4">
                                 <CalendarDaysIcon class="h-5 w-5 text-slate-400" />
                                 <div>
-                                    <span class="text-xs text-slate-400 block font-medium leading-none mb-0.5">Waktu Pengiriman</span>
-                                    <span class="font-medium text-slate-700">{{ formatDate(complaint.submitted_at) }}</span>
+                                    <span class="text-xs text-slate-400 block font-medium leading-none mb-0.5">Waktu
+                                        Pengiriman</span>
+                                    <span class="font-medium text-slate-700">{{ formatDateTime(complaint.submitted_at)
+                                        }}</span>
                                 </div>
                             </div>
 
@@ -116,9 +109,21 @@ function formatDate(dateString: string) {
                                 <label class="mb-2 block text-xs font-bold uppercase tracking-wider text-slate-400">
                                     Isi Deskripsi / Kronologi
                                 </label>
-                                <div class="rounded-xl bg-slate-50/40 border border-slate-100 p-4 text-sm leading-relaxed text-slate-700 whitespace-pre-line">
+                                <div
+                                    class="rounded-xl bg-slate-50/40 border border-slate-100 p-4 text-sm leading-relaxed text-slate-700 whitespace-pre-line">
                                     {{ complaint.description }}
                                 </div>
+                            </div>
+
+                            <div v-if="complaint.responses?.length"
+                                class="rounded-xl border border-green-200 bg-green-50 p-4">
+                                <h3 class="font-semibold text-green-800 mb-2">
+                                    Solusi / Tindak Lanjut
+                                </h3>
+
+                                <p class="whitespace-pre-line text-slate-700">
+                                    {{ complaint.responses[0].solution }}
+                                </p>
                             </div>
                         </div>
                     </div>

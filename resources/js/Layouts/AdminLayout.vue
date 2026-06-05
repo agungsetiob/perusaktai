@@ -197,7 +197,8 @@ function isRouteActive(
                 </div>
 
                 <!-- Menu: Kategori -->
-                <Link v-if="user?.role === 'super_admin' || user?.role === 'admin' || user?.role === 'supervisor'" :href="route('admin.categories.index')"
+                <Link v-if="user?.role === 'super_admin' || user?.role === 'admin' || user?.role === 'supervisor'"
+                    :href="route('admin.categories.index')"
                     class="flex items-center rounded-lg py-2.5 text-sm font-medium transition-all duration-200 group"
                     :class="[
                         isRouteActive('admin.categories.*')
@@ -225,7 +226,8 @@ function isRouteActive(
                 </Link>
 
                 <!-- Menu: Audit Logs (Super Admin & Supervisor) -->
-                <Link v-if="user?.role === 'super_admin' || user?.role === 'supervisor'" :href="route('admin.audit-logs.index')"
+                <Link v-if="user?.role === 'super_admin' || user?.role === 'supervisor'"
+                    :href="route('admin.audit-logs.index')"
                     class="flex items-center rounded-lg py-2.5 text-sm font-medium transition-all duration-200 group"
                     :class="[
                         isRouteActive('admin.audit-logs.*')
@@ -265,6 +267,9 @@ function isRouteActive(
                         class="rounded-lg p-1.5 text-slate-600 hover:bg-slate-100 lg:hidden">
                         <Bars3Icon class="h-6 w-6" />
                     </button>
+                    <h1 class="text-sm font-semibold text-slate-700 lg:text-base truncate">
+                        RAJAPATEN AI
+                    </h1>
                 </div>
 
                 <!-- Sisi Kanan Profile & Logout (Gaya Modern) -->
@@ -287,7 +292,7 @@ function isRouteActive(
                             </span>
                         </button>
                         <div v-if="showNotifications"
-                            class="absolute right-0 top-12 z-50 w-96 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xl">
+                            class="absolute -right-12 top-12 z-50 w-96 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xl">
                             <div class="flex items-center justify-between border-b border-slate-100 px-4 py-3">
                                 <h3 class="font-semibold">
                                     Notifikasi
@@ -399,8 +404,22 @@ function isRouteActive(
                     <slot />
                 </div>
             </main>
-
+            <!-- ========== MULAI FOOTER ========== -->
+            <footer
+                class="border-t border-slate-200 bg-white/50 backdrop-blur-sm py-4 px-4 sm:px-8 transition-all duration-300">
+                <div class="w-full max-w-8xl mx-auto">
+                    <div class="flex flex-col sm:flex-row items-center justify-center text-xs text-slate-500">
+                        <div class="flex items-center gap-1">
+                            <span>© {{ new Date().getFullYear() }}</span>
+                            <span class="font-medium text-slate-700">RAJAPATEN AI</span>
+                            <span>Hak Cipta Dilindungi.</span>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+            <!-- ========== AKHIR FOOTER ========== -->
         </div>
+        <slot name="floating-chat" />
     </div>
 </template>
 
