@@ -63,7 +63,7 @@ const user = page.props.auth?.user
                         <span class="h-4 w-px bg-slate-200 mx-1"></span>
 
                         <!-- Kondisi: jika user login -->
-                        <Link v-if="user" href="/profile"
+                        <Link v-if="user" href="/admin/dashboard"
                             class="inline-flex items-center justify-center rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white shadow-sm transition-all hover:bg-slate-800 active:scale-95">
                             {{ user.name }}
                         </Link>
@@ -77,7 +77,7 @@ const user = page.props.auth?.user
 
                     <div class="sm:hidden flex items-center">
                         <!-- Jika user login -->
-                        <Link v-if="user" href="/profile"
+                        <Link v-if="user" href="/admin/dashboard"
                             class="inline-flex text-xxl font-semibold text-slate-600 rounded-lg border border-slate-300 p-1 active:scale-95">
                             <UserIcon class="h-7 w-7" />
                         </Link>

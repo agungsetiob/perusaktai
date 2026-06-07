@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <title>Laporan Pengaduan Layanan</title>
@@ -8,6 +9,7 @@
         @page {
             margin: 1.2cm 1.4cm 1.4cm 1.4cm;
         }
+
         body {
             font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
             color: #1e293b;
@@ -24,20 +26,24 @@
             border-bottom: 3px solid #0f172a;
             margin-bottom: 20px;
         }
+
         .kop-logo {
             width: 70px;
             padding-bottom: 12px;
             vertical-align: middle;
         }
+
         .kop-logo img {
             height: 60px;
             width: auto;
         }
+
         .kop-text {
             padding-left: 15px;
             padding-bottom: 12px;
             vertical-align: middle;
         }
+
         .kop-text h1 {
             font-size: 18px;
             font-weight: bold;
@@ -46,6 +52,7 @@
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
+
         .kop-text p {
             font-size: 10px;
             color: #64748b;
@@ -57,6 +64,7 @@
         .report-title-container {
             margin-bottom: 25px;
         }
+
         .report-title {
             font-size: 14px;
             font-weight: bold;
@@ -64,6 +72,7 @@
             margin: 0;
             text-transform: uppercase;
         }
+
         .report-period {
             font-size: 11px;
             color: #475569;
@@ -79,6 +88,7 @@
             margin-right: -8px;
             margin-bottom: 25px;
         }
+
         .summary-card {
             background-color: #f8fafc;
             border: 1px solid #e2e8f0;
@@ -86,6 +96,7 @@
             text-align: left;
             border-radius: 6px;
         }
+
         .summary-label {
             font-size: 9px;
             font-weight: bold;
@@ -93,6 +104,7 @@
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
+
         .summary-value {
             font-size: 18px;
             font-weight: bold;
@@ -105,10 +117,12 @@
             width: 100%;
             margin-bottom: 25px;
         }
+
         .analysis-column {
             width: 50%;
             vertical-align: top;
         }
+
         .section-title {
             font-size: 12px;
             font-weight: bold;
@@ -124,6 +138,7 @@
             border-collapse: collapse;
             margin-bottom: 15px;
         }
+
         .data-table th {
             background-color: #f1f5f9;
             color: #475569;
@@ -134,11 +149,13 @@
             border: 1px solid #e2e8f0;
             letter-spacing: 0.5px;
         }
+
         .data-table td {
             padding: 8px 10px;
             border: 1px solid #e2e8f0;
             vertical-align: top;
         }
+
         .data-table tr:nth-child(even) {
             background-color: #f8fafc;
         }
@@ -152,39 +169,79 @@
             border-radius: 4px;
             text-transform: uppercase;
         }
-        .badge-waiting { bg-color: #fef9c3; color: #854d0e; border: 1px solid #fef08a; }
-        .badge-under_review { bg-color: #ffedd5; color: #9a3412; border: 1px solid #fed7aa; }
-        .badge-on_process { bg-color: #dbeafe; color: #1e40af; border: 1px solid #bfdbfe; }
-        .badge-solved { bg-color: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
-        .badge-rejected { bg-color: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
+
+        .badge-waiting {
+            bg-color: #fef9c3;
+            color: #854d0e;
+            border: 1px solid #fef08a;
+        }
+
+        .badge-under_review {
+            bg-color: #ffedd5;
+            color: #9a3412;
+            border: 1px solid #fed7aa;
+        }
+
+        .badge-on_process {
+            bg-color: #dbeafe;
+            color: #1e40af;
+            border: 1px solid #bfdbfe;
+        }
+
+        .badge-solved {
+            bg-color: #dcfce7;
+            color: #166534;
+            border: 1px solid #bbf7d0;
+        }
+
+        .badge-rejected {
+            bg-color: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+        }
 
         /* TEKS PEMBANTU */
-        .text-center { text-align: center; }
-        .text-right { text-align: right; }
-        .font-mono { font-family: Courier, monospace; font-weight: bold; }
-        .text-muted { color: #64748b; font-size: 10px; }
+        .text-center {
+            text-align: center;
+        }
+
+        .text-right {
+            text-align: right;
+        }
+
+        .font-mono {
+            font-family: Courier, monospace;
+            font-weight: bold;
+        }
+
+        .text-muted {
+            color: #64748b;
+            font-size: 10px;
+        }
     </style>
 </head>
+
 <body>
 
-    <!-- KOP SURAT INSTANSI (MENDUKUNG LOGO RS) -->
     <table class="kop-table">
         <tr>
             <td class="kop-logo">
                 <!-- Gunakan public_path agar dompdf bisa membaca file lokal gambar tanpa masalah network -->
-                <img src="{{ public_path('beraksi-logo.webp') }}" alt="Logo RS">
+                <img src="{{ public_path('logo.webp') }}" alt="Logo RS">
             </td>
             <td class="kop-text">
-                <h1>Rumah Sakit Umum Daerah Beraksi</h1>
-                <p>Jl. Kesehatan Raya No. 12, Kota Utama • Telp: (021) 555-1234 • Email: info@rs-beraksi.go.id</p>
+                <h1>RSUD dr. H. Andi Abdurrahman Noor</h1>
+                <p>Alamat: Jl. H. M. Amin, KM. 10 RT. 03 Desa Sepunggur Kec. Kusan Tengah
+                    Kab. Tanah Bumbu Prov. Kalimantan Selatan KP. 72273, Telpon. 0811 5000 266/ 0518 6070767
+                </p>
             </td>
         </tr>
     </table>
 
     <!-- JUDUL LAPORAN & PERIODE -->
     <div class="report-title-container">
-        <h2 class="report-title">Laporan Eksekutif Pengaduan Layanan</h2>
-        <p class="report-period">Periode Data: <strong>{{ $startDate }}</strong> s/d <strong>{{ $endDate }}</strong></p>
+        <h2 class="report-title">Laporan Pengaduan Layanan</h2>
+        <p class="report-period">Periode: <strong>{{ $startDate }}</strong> s/d <strong>{{ $endDate }}</strong></p>
     </div>
 
     <!-- PANEL STATISTIK RINGKASAN UTAMA -->
@@ -304,18 +361,23 @@
                             }
                             $status = strtolower((string) $status);
                         @endphp
-                        
+
                         {{-- Logika styling pengganti StatusBadge pada PDF render --}}
                         @if($status === 'waiting')
-                            <span class="pdf-badge" style="background-color: #fef9c3; color: #854d0e; border: 1px solid #fef08a;">Waiting</span>
+                            <span class="pdf-badge"
+                                style="background-color: #fef9c3; color: #854d0e; border: 1px solid #fef08a;">Waiting</span>
                         @elseif($status === 'under_review')
-                            <span class="pdf-badge" style="background-color: #ffedd5; color: #9a3412; border: 1px solid #fed7aa;">Review</span>
+                            <span class="pdf-badge"
+                                style="background-color: #ffedd5; color: #9a3412; border: 1px solid #fed7aa;">Review</span>
                         @elseif($status === 'on_process')
-                            <span class="pdf-badge" style="background-color: #dbeafe; color: #1e40af; border: 1px solid #bfdbfe;">Process</span>
+                            <span class="pdf-badge"
+                                style="background-color: #dbeafe; color: #1e40af; border: 1px solid #bfdbfe;">Process</span>
                         @elseif($status === 'solved')
-                            <span class="pdf-badge" style="background-color: #dcfce7; color: #166534; border: 1px solid #bbf7d0;">Solved</span>
+                            <span class="pdf-badge"
+                                style="background-color: #dcfce7; color: #166534; border: 1px solid #bbf7d0;">Solved</span>
                         @else
-                            <span class="pdf-badge" style="background-color: #fee2e2; color: #991b1b; border: 1px solid #fecaca;">Rejected</span>
+                            <span class="pdf-badge"
+                                style="background-color: #fee2e2; color: #991b1b; border: 1px solid #fecaca;">Rejected</span>
                         @endif
                     </td>
                     <td class="text-muted">
@@ -336,14 +398,14 @@
     <table style="width: 100%; border-collapse: collapse; margin-top: 30px;">
         <tr>
             <td class="text-muted" style="width: 50%;">
-                Sistem Informasi Pengaduan Rumah Sakit (SIPERUSAK)<br>
-                *Dokumen ini sah diunduh secara resmi melalui akun Penanggung Jawab Manajemen Sektor Utama.
+                *Dokumen ini sah diunduh secara resmi melalui akun Penanggung Jawab Manajemen.
             </td>
             <td class="text-right text-muted" style="width: 50%; vertical-align: bottom;">
-                Dicetak otomatis pada: {{ now()->translatedFormat('d F Y H:i') }} WIB
+                Dicetak otomatis pada: {{ now()->translatedFormat('d F Y H:i') }} WITA
             </td>
         </tr>
     </table>
 
 </body>
+
 </html>

@@ -106,6 +106,7 @@ function getActionClass(act: string) {
                             <option value="complaint_response">Response</option>
                             <option value="user">User</option>
                             <option value="category">Category</option>
+                            <option value="whatsapp">Whatsapp</option>
                         </select>
                         <div
                             class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 text-slate-400">

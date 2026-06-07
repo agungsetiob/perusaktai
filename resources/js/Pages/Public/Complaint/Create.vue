@@ -87,8 +87,8 @@ function handleFiles(event: Event) {
                             >
                             <div class="text-sm">
                                 <span class="font-semibold text-blue-900">Kirim sebagai anonim</span>
-                                <p class="text-xs text-blue-700/80 mt-0.5">
-                                    Identitas Anda (Nama, No HP, NIK) tidak akan dipublikasikan atau dilihat oleh petugas penangan utama.
+                                <p class="text-xs text-red-500 mt-0.5">
+                                    Anda tidak menerima notifikasi whatsapp saat aduan selesai ditindaklanjuti jika memilih anonim.
                                 </p>
                             </div>
                         </label>
