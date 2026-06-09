@@ -20,11 +20,12 @@ class UserSeeder extends Seeder
             'email' => 'admin@example.com',
             'role' => 'admin',
             'email_verified_at' => now(),
-            'password' => Hash::make('password123'),
+            'password' => Hash::make(env('ADMIN_PASS')),
             'remember_token' => Str::random(10),
             'created_at' => now(),
             'updated_at' => now(),
         ]);
+
 
         // 2. Data untuk Role: supervisor
         DB::table('users')->insert([
@@ -32,7 +33,7 @@ class UserSeeder extends Seeder
             'email' => 'kasubbag@example.com',
             'role' => 'supervisor',
             'email_verified_at' => now(),
-            'password' => Hash::make('password123'),
+            'password' => Hash::make(env('SUPERVISOR_PASS')),
             'remember_token' => Str::random(10),
             'created_at' => now(),
             'updated_at' => now(),
@@ -44,7 +45,7 @@ class UserSeeder extends Seeder
             'email' => 'superadmin@example.com',
             'role' => 'super_admin',
             'email_verified_at' => now(),
-            'password' => Hash::make('password123'),
+            'password' => Hash::make(env('SUPERADMIN_PASS')),
             'remember_token' => Str::random(10),
             'created_at' => now(),
             'updated_at' => now(),
