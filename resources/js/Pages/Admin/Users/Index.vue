@@ -89,13 +89,18 @@ const formatRole = (role: string) => {
         <div class="space-y-5 animate-fade-in">
             
             <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between border-b border-slate-100 pb-5">
-                <div>
-                    <h1 class="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
-                        Manajemen Pengguna
-                    </h1>
-                    <p class="text-sm text-slate-500 mt-1">
-                        Kelola data akun, hak akses, dan status keaktifan user dalam sistem.
-                    </p>
+                <div class="flex items-center gap-2.5">
+                    <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-50 text-blue-600">
+                        <ShieldCheckIcon class="h-5 w-5" />
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold tracking-tight text-slate-900">
+                            Manajemen Pengguna
+                        </h1>
+                        <p class="text-xs font-medium text-slate-400 mt-0.5">
+                            Kelola data akun, hak akses, dan status keaktifan user dalam sistem.
+                        </p>
+                    </div>
                 </div>
 
                 <button

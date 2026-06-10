@@ -61,6 +61,11 @@ class StoreComplaintRequest extends FormRequest
                 'mimes:jpg,jpeg,png,pdf',
                 'max:5120', // 5MB
             ],
+
+            'room_id' => [
+                'required',
+                'exists:rooms,id',
+            ],
         ];
     }
 
@@ -87,12 +92,15 @@ class StoreComplaintRequest extends FormRequest
 
             'attachments.*.max' =>
                 'Ukuran file maksimal 5 MB.',
-            
+
             'complaint_category_id.required' =>
                 'Kategori keluhan wajib dipilih.',
 
             'description.required' =>
                 'Deskripsi keluhan/aduan wajib diisi.',
+            
+            'room_id.required' =>
+                'Ruangan perawatan wajib dipilih'
         ];
     }
 

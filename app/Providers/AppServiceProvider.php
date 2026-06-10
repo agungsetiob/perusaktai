@@ -6,6 +6,8 @@ use App\Models\Complaint;
 use App\Models\ComplaintCategory;
 use App\Models\ComplaintResponse;
 use App\Models\User;
+use App\Models\Room;
+use App\Policies\RoomPolicy;
 use App\Policies\ComplaintPolicy;
 use App\Policies\ComplaintCategoryPolicy;
 use App\Policies\ComplaintResponsePolicy;
@@ -53,11 +55,16 @@ class AppServiceProvider extends ServiceProvider
             UserPolicy::class
         );
 
+        Gate::policy(
+            Room::class,
+            RoomPolicy::class
+        );
+
         if (App::environment('local')) {
-        // Paksa semua HttpClient bawaan Laravel & Package untuk mengabaikan SSL peer verification
-        Http::globalOptions([
-            'verify' => false,
-        ]);
-    }
+            // Paksa semua HttpClient bawaan Laravel & Package untuk mengabaikan SSL peer verification
+            Http::globalOptions([
+                'verify' => false,
+            ]);
+        }
     }
 }

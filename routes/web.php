@@ -5,6 +5,8 @@ use App\Http\Controllers\Admin\ComplaintController as AdminComplaintController;
 use App\Http\Controllers\Admin\ComplaintCategoryController;
 use App\Http\Controllers\Admin\ComplaintResponseController;
 use App\Http\Controllers\Admin\ComplaintReportController;
+use App\Http\Controllers\Admin\RoomController;
+use App\Http\Controllers\Admin\RoomComplaintReportController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
@@ -69,6 +71,7 @@ Route::middleware(['auth', 'active', 'role:admin,supervisor,super_admin'])
         // Manajemen Kategori & Laporan Cetak PDF (SLA)
         Route::resource('categories', ComplaintCategoryController::class)->except(['show', 'create', 'edit']);
         Route::get('/reports/complaints', ComplaintReportController::class)->name('reports.complaints');
+        Route::get('reports/rooms', RoomComplaintReportController::class)->name('reports.rooms');
 
         // Pengaduan (Complaints) - Read & Detail
         Route::resource('complaints', AdminComplaintController::class)->only(['index', 'show']);
@@ -102,6 +105,17 @@ Route::middleware(['auth', 'active', 'role:admin,supervisor,super_admin'])
         */
         Route::middleware(['role:super_admin'])->group(function () {
             Route::resource('users', UserController::class)->except(['show', 'create', 'edit']);
+            Route::resource(
+                'rooms',
+                RoomController::class
+            )
+                ->only([
+                    'index',
+                    'store',
+                    'update',
+                    'destroy',
+                ])
+                ->names('rooms');
         });
 
     });

@@ -2,7 +2,7 @@
 import { Head, router, usePage } from '@inertiajs/vue3'
 import type { PageProps } from '@inertiajs/core'
 import AdminLayout from '@/Layouts/AdminLayout.vue'
-import CategoryFormModal from '@/Components/CategoryFormModal.vue'
+import RoomFormModal from '@/Components/RoomFormModal.vue'
 import Modal from '@/Components/Modal.vue'
 import { ref, computed } from 'vue'
 import type { User } from '@/types'
@@ -10,13 +10,13 @@ import {
     PlusIcon, 
     PencilSquareIcon, 
     PowerIcon, 
-    FolderIcon,
+    BuildingOfficeIcon,
     ExclamationTriangleIcon,
     XMarkIcon
 } from '@heroicons/vue/24/outline'
 
 defineProps<{
-    categories: any[]
+    rooms: any[]
 }>()
 
 const page = usePage<PageProps & {
@@ -26,41 +26,46 @@ const page = usePage<PageProps & {
 }>()
 
 const isSuperAdmin = computed(() => page.props.auth.user?.role === 'super_admin')
+const isAdminOrSupervisor = computed(() => 
+    page.props.auth.user?.role === 'super_admin' || 
+    page.props.auth.user?.role === 'admin' || 
+    page.props.auth.user?.role === 'supervisor'
+)
 
 const showFormModal = ref(false)
-const selectedCategory = ref<any | null>(null)
+const selectedRoom = ref<any | null>(null)
 
 const showConfirmModal = ref(false)
-const categoryIdToDeactivate = ref<number | null>(null)
+const roomIdToDeactivate = ref<number | null>(null)
 const isSubmittingDeactivate = ref(false)
 
-function createCategory() {
-    selectedCategory.value = null
+function createRoom() {
+    selectedRoom.value = null
     showFormModal.value = true
 }
 
-function editCategory(category: any) {
-    selectedCategory.value = category
+function editRoom(room: any) {
+    selectedRoom.value = room
     showFormModal.value = true
 }
 
 function confirmDeactivate(id: number) {
-    categoryIdToDeactivate.value = id
+    roomIdToDeactivate.value = id
     showConfirmModal.value = true
 }
 
 function closeConfirmModal() {
     showConfirmModal.value = false
-    categoryIdToDeactivate.value = null
+    roomIdToDeactivate.value = null
 }
 
 function handleDeactivate() {
-    if (!categoryIdToDeactivate.value) return
+    if (!roomIdToDeactivate.value) return
 
     isSubmittingDeactivate.value = true
 
     router.delete(
-        route('admin.categories.destroy', categoryIdToDeactivate.value),
+        route('admin.rooms.destroy', roomIdToDeactivate.value),
         {
             preserveScroll: true,
             onSuccess: () => {
@@ -76,7 +81,7 @@ function handleDeactivate() {
 </script>
 
 <template>
-    <Head title="Kategori Pengaduan" />
+    <Head title="Manajemen Ruangan" />
 
     <AdminLayout>
         <div class="space-y-5 animate-fade-in">
@@ -84,25 +89,26 @@ function handleDeactivate() {
             <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between border-b border-slate-200 pb-4">
                 <div class="flex items-center gap-2.5">
                     <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-50 text-blue-600">
-                        <FolderIcon class="h-5 w-5" />
+                        <BuildingOfficeIcon class="h-5 w-5" />
                     </div>
                     <div>
                         <h1 class="text-xl font-bold tracking-tight text-slate-900">
-                            Kategori Pengaduan
+                            Manajemen Ruangan
                         </h1>
                         <p class="text-xs font-medium text-slate-400 mt-0.5">
-                            Kelola klasifikasi atau jenis keluhan operasional rumah sakit
+                            Kelola data ruangan atau unit pelayanan di rumah sakit
                         </p>
                     </div>
                 </div>
 
-                <button v-if="isSuperAdmin"
+                <button 
+                    v-if="isSuperAdmin"
                     type="button"
                     class="inline-flex items-center justify-center gap-1.5 rounded-xl bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition-all hover:bg-blue-700 active:scale-95"
-                    @click="createCategory"
+                    @click="createRoom"
                 >
                     <PlusIcon class="h-5 w-5 stroke-2" />
-                    <span>Tambah Kategori</span>
+                    <span>Tambah Ruangan</span>
                 </button>
             </div>
 
@@ -112,7 +118,7 @@ function handleDeactivate() {
                         <thead class="bg-slate-50">
                             <tr>
                                 <th scope="col" class="px-5 py-3 text-left text-xs font-bold uppercase tracking-wider text-slate-400 w-7/12">
-                                    Nama Kategori
+                                    Nama Ruangan
                                 </th>
                                 <th scope="col" class="px-5 py-3 text-left text-xs font-bold uppercase tracking-wider text-slate-400 w-3/12">
                                     Status
@@ -125,25 +131,25 @@ function handleDeactivate() {
 
                         <tbody class="divide-y divide-slate-100 bg-white">
                             <tr
-                                v-for="category in categories"
-                                :key="category.id"
+                                v-for="room in rooms"
+                                :key="room.id"
                                 class="hover:bg-slate-50/70 transition-colors"
                             >
                                 <td class="whitespace-nowrap px-5 py-3.5 text-xs sm:text-sm font-semibold text-slate-700">
-                                    {{ category.name }}
+                                    {{ room.name }}
                                 </td>
 
                                 <td class="whitespace-nowrap px-5 py-3.5">
                                     <span
                                         class="inline-flex items-center rounded-full px-2 py-1 text-xs font-bold tracking-wide"
                                         :class="
-                                            category.is_active
+                                            room.is_active
                                                 ? 'bg-emerald-50 text-emerald-700 border border-emerald-200/60'
                                                 : 'bg-rose-50 text-rose-700 border border-rose-200/60'
                                         "
                                     >
-                                        <span class="mr-1 h-1.5 w-1.5 rounded-full" :class="category.is_active ? 'bg-emerald-500' : 'bg-rose-500'"></span>
-                                        {{ category.is_active ? 'Aktif' : 'Nonaktif' }}
+                                        <span class="mr-1 h-1.5 w-1.5 rounded-full" :class="room.is_active ? 'bg-emerald-500' : 'bg-rose-500'"></span>
+                                        {{ room.is_active ? 'Aktif' : 'Nonaktif' }}
                                     </span>
                                 </td>
 
@@ -152,17 +158,17 @@ function handleDeactivate() {
                                         <button
                                             type="button"
                                             class="inline-flex items-center gap-1 rounded-lg bg-slate-50 border border-slate-200 px-2.5 py-1 text-xs font-semibold text-slate-600 hover:bg-blue-50 hover:text-blue-600 hover:border-blue-200 transition-colors"
-                                            @click="editCategory(category)"
+                                            @click="editRoom(room)"
                                         >
                                             <PencilSquareIcon class="h-4 w-4" />
                                             <span>Edit</span>
                                         </button>
 
                                         <button
-                                            v-if="category.is_active"
+                                            v-if="room.is_active"
                                             type="button"
                                             class="inline-flex items-center gap-1 rounded-lg bg-slate-50 border border-slate-200 px-2.5 py-1 text-xs font-semibold text-rose-600 hover:bg-rose-50 hover:border-rose-200 transition-colors"
-                                            @click="confirmDeactivate(category.id)"
+                                            @click="confirmDeactivate(room.id)"
                                         >
                                             <PowerIcon class="h-4 w-4" />
                                             <span>Nonaktifkan</span>
@@ -171,10 +177,10 @@ function handleDeactivate() {
                                 </td>
                             </tr>
 
-                            <tr v-if="!categories || categories.length === 0">
+                            <tr v-if="!rooms || rooms.length === 0">
                                 <td :colspan="isSuperAdmin ? 3 : 2" class="px-5 py-10 text-center text-slate-400 text-xs sm:text-sm font-medium">
-                                    <FolderIcon class="h-8 w-8 mx-auto text-slate-300 mb-2" />
-                                    Belum ada data kategori pengaduan yang tersimpan.
+                                    <BuildingOfficeIcon class="h-8 w-8 mx-auto text-slate-300 mb-2" />
+                                    Belum ada data ruangan yang tersimpan.
                                 </td>
                             </tr>
                         </tbody>
@@ -184,9 +190,9 @@ function handleDeactivate() {
 
         </div>
 
-        <CategoryFormModal
+        <RoomFormModal
             :show="showFormModal"
-            :category="selectedCategory"
+            :room="selectedRoom"
             @close="showFormModal = false"
         />
 
@@ -207,11 +213,11 @@ function handleDeactivate() {
                     </div>
 
                     <h3 class="text-sm font-bold text-slate-900">
-                        Nonaktifkan Kategori Laporan?
+                        Nonaktifkan Ruangan?
                     </h3>
                     
                     <p class="text-xs text-slate-500 font-medium mt-2 leading-relaxed px-2">
-                        Tindakan ini akan menyembunyikan kategori ini dari formulir aduan publik masyarakat. Anda dapat mengaktifkannya kembali kapan saja.
+                        Tindakan ini akan menyembunyikan ruangan ini dari formulir aduan publik masyarakat. Anda dapat mengaktifkannya kembali kapan saja.
                     </p>
                 </div>
 
@@ -240,6 +246,7 @@ function handleDeactivate() {
 
     </AdminLayout>
 </template>
+
 <style scoped>
 .animate-fade-in {
     animation: fadeIn 0.4s ease-out forwards;

@@ -17,6 +17,7 @@ class ComplaintService
             $complaint = Complaint::create([
                 'tracking_code' => $this->generateTrackingCode(),
                 'complaint_category_id' => $data['complaint_category_id'],
+                'room_id' => $data['room_id'],
                 'is_anonymous' => $data['is_anonymous'],
 
                 'name' => $data['is_anonymous']

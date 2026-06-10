@@ -14,7 +14,8 @@ import {
     ClipboardDocumentListIcon,
     DocumentMagnifyingGlassIcon,
     ArrowPathIcon,
-    XCircleIcon
+    XCircleIcon,
+    CalendarDaysIcon
 } from '@heroicons/vue/24/outline'
 
 const props = defineProps<{
@@ -59,7 +60,7 @@ const monthlyChartOptions = computed(() => ({
         toolbar: { show: false },
         sparkline: { enabled: false },
     },
-    colors: ['#2563eb'], // Blue 600
+    colors: ['#2563eb'],
     stroke: { curve: 'smooth', width: 3 },
     markers: { size: 4, colors: ['#2563eb'], strokeWidth: 2, hover: { size: 6 } },
     grid: { borderColor: '#f1f5f9', strokeDashArray: 4 },
@@ -70,14 +71,12 @@ const monthlyChartOptions = computed(() => ({
         labels: { style: { colors: '#94a3b8', fontSize: '12px' } }
     },
     yaxis: {
-        // Mencegah nilai desimal di sumbu Y
         labels: {
             style: { colors: '#94a3b8', fontSize: '12px' },
             formatter: (val: number) => {
                 return val % 1 === 0 ? val.toFixed(0) : ''
             }
         },
-        // Memaksa min nilai dari 0 dan kelipatan bulat
         min: 0,
         forceNiceScale: true
     },
@@ -119,25 +118,67 @@ const statusChartOptions = computed(() => ({
 
     <AdminLayout>
         <div class="space-y-5 animate-fade-in">
+            <div class="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between border-b border-slate-100 pb-5">
+                <div class="flex items-center gap-2.5">
+                    <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-50 text-blue-600">
+                        <Squares2X2Icon class="h-5 w-5" />
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold tracking-tight text-slate-900">
+                            Dashboard
+                        </h1>
+                        <p class="text-xs font-medium text-slate-400 mt-0.5">
+                            Pantau statistik pengaduan, performa penyelesaian, dan laporan terbaru secara real-time.
+                        </p>
+                    </div>
+                </div>
 
-            <!-- HEADER -->
-            <div class="border-b border-slate-100 pb-5">
-                <h1 class="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl flex items-center gap-2.5">
-                    <Squares2X2Icon class="h-8 w-8 text-blue-600" />
-                    <span>Ringkasan Dashboard</span>
-                </h1>
-                <p class="text-sm text-slate-500 mt-1">
-                    Pantau statistik pengaduan, performa penyelesaian, dan laporan terbaru secara real-time.
-                </p>
+                <!-- Form Export PDF Bergaya Bar Horizontal Modern -->
+                <form action="/admin/reports/complaints" method="GET" target="_blank"
+                    class="rounded-2xl border border-slate-200 bg-white p-3 shadow-sm shadow-slate-100/50 w-full lg:w-auto">
+                    <div class="flex flex-col sm:flex-row items-center gap-2.5">
+                        
+                        <!-- Input Tanggal Mulai -->
+                        <div class="relative w-full sm:w-40">
+                            <input 
+                                type="date" 
+                                name="start_date" 
+                                required
+                                class="w-full rounded-xl border border-slate-200 bg-slate-50/50 px-3 py-2 text-xs font-medium text-slate-700 outline-none transition-all focus:border-red-500 focus:bg-white focus:ring-4 focus:ring-red-500/10"
+                            >
+                            <span class="absolute right-3 top-2.5 pointer-events-none text-slate-400">
+                                <CalendarDaysIcon class="h-4 w-4" />
+                            </span>
+                        </div>
+
+                        <span class="text-slate-400 text-xs font-semibold hidden sm:inline">s/d</span>
+
+                        <!-- Input Tanggal Selesai -->
+                        <div class="relative w-full sm:w-40">
+                            <input 
+                                type="date" 
+                                name="end_date" 
+                                required
+                                class="w-full rounded-xl border border-slate-200 bg-slate-50/50 px-3 py-2 text-xs font-medium text-slate-700 outline-none transition-all focus:border-red-500 focus:bg-white focus:ring-4 focus:ring-red-500/10"
+                            >
+                            <span class="absolute right-3 top-2.5 pointer-events-none text-slate-400">
+                                <CalendarDaysIcon class="h-4 w-4" />
+                            </span>
+                        </div>
+
+                        <!-- Button Rekap -->
+                        <button class="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-xl bg-red-600 px-4 py-2 text-xs font-bold text-white shadow-md shadow-red-600/10 hover:bg-red-700 transition-all active:scale-95 shrink-0">
+                            <DocumentMagnifyingGlassIcon class="h-4 w-4" />
+                            <span>Export PDF</span>
+                        </button>
+                    </div>
+                </form>
             </div>
 
-            <!-- HASIL REDESIGN CARD INFORMASI UTAMA -->
             <div class="grid gap-5 lg:grid-cols-3">
 
-                <!-- SISI KIRI: 3 KARTU CORE UTAMA (Lebih Besar & Representatif) -->
                 <div class="lg:col-span-2 grid gap-4 sm:grid-cols-3">
 
-                    <!-- Total Pengaduan -->
                     <div
                         class="rounded-2xl border border-slate-100 bg-white p-5 shadow-xs flex flex-col justify-between hover:border-blue-200 transition-colors">
                         <div>
@@ -154,7 +195,6 @@ const statusChartOptions = computed(() => ({
                         </div>
                     </div>
 
-                    <!-- Rasio Penyelesaian -->
                     <div
                         class="rounded-2xl border border-slate-100 bg-white p-5 shadow-xs flex flex-col justify-between hover:border-emerald-200 transition-colors">
                         <div>
@@ -171,7 +211,6 @@ const statusChartOptions = computed(() => ({
                         </div>
                     </div>
 
-                    <!-- Rerata Waktu Solusi (Menampilkan string Jam & Menit murni dari Controller Anda) -->
                     <div
                         class="rounded-2xl border border-slate-100 bg-white p-5 shadow-xs flex flex-col justify-between hover:border-indigo-200 transition-colors">
                         <div>
@@ -189,11 +228,9 @@ const statusChartOptions = computed(() => ({
                     </div>
                 </div>
 
-                <!-- SISI KANAN: STATUS PIPELINE BREAKDOWN (Menyatu dalam satu widget rapi) -->
                 <div class="rounded-2xl border border-slate-100 bg-white p-4 shadow-xs flex flex-col justify-between">
                     <div class="grid grid-cols-5 gap-1.5 h-full">
 
-                        <!-- Menunggu -->
                         <div
                             class="flex flex-col items-center justify-center text-center rounded-xl bg-slate-50/50 border border-slate-100 p-2 hover:bg-yellow-50/40 hover:border-yellow-100 transition-colors">
                             <span
@@ -204,7 +241,6 @@ const statusChartOptions = computed(() => ({
                             <span class="text-base font-extrabold text-slate-900 mt-0.5">{{ stats.waiting }}</span>
                         </div>
 
-                        <!-- Ditinjau -->
                         <div
                             class="flex flex-col items-center justify-center text-center rounded-xl bg-slate-50/50 border border-slate-100 p-2 hover:bg-orange-50/40 hover:border-orange-100 transition-colors">
                             <span
@@ -215,7 +251,6 @@ const statusChartOptions = computed(() => ({
                             <span class="text-base font-extrabold text-slate-900 mt-0.5">{{ stats.under_review }}</span>
                         </div>
 
-                        <!-- Diproses -->
                         <div
                             class="flex flex-col items-center justify-center text-center rounded-xl bg-slate-50/50 border border-slate-100 p-2 hover:bg-blue-50/40 hover:border-blue-100 transition-colors">
                             <span class="p-1.5 rounded-lg bg-blue-50 text-blue-600 border border-blue-100/50 mb-1">
@@ -225,7 +260,6 @@ const statusChartOptions = computed(() => ({
                             <span class="text-base font-extrabold text-slate-900 mt-0.5">{{ stats.on_process }}</span>
                         </div>
 
-                        <!-- Selesai -->
                         <div
                             class="flex flex-col items-center justify-center text-center rounded-xl bg-slate-50/50 border border-slate-100 p-2 hover:bg-emerald-50/40 hover:border-emerald-100 transition-colors">
                             <span
@@ -236,7 +270,6 @@ const statusChartOptions = computed(() => ({
                             <span class="text-base font-extrabold text-emerald-700 mt-0.5">{{ stats.solved }}</span>
                         </div>
 
-                        <!-- Ditolak -->
                         <div
                             class="flex flex-col items-center justify-center text-center rounded-xl bg-slate-50/50 border border-slate-100 p-2 hover:bg-red-50/40 hover:border-red-100 transition-colors">
                             <span class="p-1.5 rounded-lg bg-red-50 text-red-600 border border-red-100/50 mb-1">
@@ -251,7 +284,6 @@ const statusChartOptions = computed(() => ({
 
             </div>
 
-            <!-- SEKSI GRAFIK -->
             <div class="grid gap-6 lg:grid-cols-2">
                 <div class="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm shadow-slate-100/50">
                     <div class="mb-4">
@@ -270,7 +302,6 @@ const statusChartOptions = computed(() => ({
                 </div>
             </div>
 
-            <!-- SEKSI TABEL DATA BAWAH -->
             <div class="grid gap-6 lg:grid-cols-3">
                 <div
                     class="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm shadow-slate-100/50 flex flex-col justify-between lg:col-span-1">

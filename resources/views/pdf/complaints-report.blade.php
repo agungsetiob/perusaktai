@@ -226,7 +226,6 @@
     <table class="kop-table">
         <tr>
             <td class="kop-logo">
-                <!-- Gunakan public_path agar dompdf bisa membaca file lokal gambar tanpa masalah network -->
                 <img src="{{ public_path('logo.webp') }}" alt="Logo RS">
             </td>
             <td class="kop-text">

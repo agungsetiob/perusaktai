@@ -4,10 +4,11 @@ namespace App\Http\Controllers\Public;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreComplaintRequest;
+use App\Models\ComplaintCategory;
+use App\Models\Room;
 use App\Services\ComplaintService;
 use Inertia\Inertia;
 use Inertia\Response;
-use App\Models\ComplaintCategory;
 
 class ComplaintController extends Controller
 {
@@ -17,6 +18,13 @@ class ComplaintController extends Controller
             'Public/Complaint/Create',
             [
                 'categories' => ComplaintCategory::query()
+                    ->where('is_active', true)
+                    ->orderBy('name')
+                    ->get([
+                        'id',
+                        'name',
+                    ]),
+                'rooms' => Room::query()
                     ->where('is_active', true)
                     ->orderBy('name')
                     ->get([

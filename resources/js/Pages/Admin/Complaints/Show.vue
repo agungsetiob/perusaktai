@@ -66,6 +66,9 @@ const user = page.props.auth.user as User
                             <p class="text-xs font-semibold text-slate-400 mt-0.5">
                                 Kategori: <span class="text-blue-600 font-medium">{{ complaint.category.name }}</span>
                             </p>
+                            <p class="text-xs font-semibold text-slate-400 mt-0.5">
+                                Ruangan: <span class="text-red-600 font-medium">{{ complaint.room.name }}</span>
+                            </p>
                         </div>
                     </div>
 

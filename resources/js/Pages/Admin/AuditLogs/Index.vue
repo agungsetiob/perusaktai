@@ -5,7 +5,6 @@ import Pagination from '@/Components/Pagination.vue'
 import { ref } from 'vue'
 import { formatDateTime } from '@/utils/date'
 
-// Import Heroicons untuk mempercantik UI
 import {
     ClockIcon,
     UserIcon,
@@ -54,7 +53,6 @@ function getModuleClass(mod: string) {
     }
 }
 
-// Helper untuk mewarnai teks jenis aksi (Create/Update/Delete)
 function getActionClass(act: string) {
     const text = act?.toLowerCase() ?? ''
     if (text.includes('create') || text.includes('store') || text.includes('approve')) return 'text-emerald-600 font-bold'
@@ -107,6 +105,7 @@ function getActionClass(act: string) {
                             <option value="user">User</option>
                             <option value="category">Category</option>
                             <option value="whatsapp">Whatsapp</option>
+                            <option value="room">Room</option>
                         </select>
                         <div
                             class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 text-slate-400">

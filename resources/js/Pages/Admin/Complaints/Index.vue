@@ -16,6 +16,7 @@ import {
 
 const props = defineProps<{
     complaints: any
+    rooms:any
     categories: any[]
     filters: {
         search: string | null
@@ -57,15 +58,22 @@ function resetFilter() {
 
             <!-- PAGE HEADER & PANEL EXPORT PDF -->
             <div class="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between border-b border-slate-100 pb-5">
-                <div>
-                    <h1 class="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">Daftar Pengaduan</h1>
-                    <p class="text-sm text-slate-500 mt-1">
-                        Kelola, filter, dan unduh berkas laporan pengaduan masuk dari pasien & publik.
-                    </p>
+                <div class="flex items-center gap-2.5">
+                    <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-50 text-blue-600">
+                        <DocumentArrowDownIcon class="h-5 w-5" />
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold tracking-tight text-slate-900">
+                            Daftar Pengaduan
+                        </h1>
+                        <p class="text-xs font-medium text-slate-400 mt-0.5">
+                            Kelola, filter, dan unduh berkas laporan pengaduan masuk dari pasien & publik.
+                        </p>
+                    </div>
                 </div>
 
                 <!-- Form Export PDF Bergaya Bar Horizontal Modern -->
-                <form action="/admin/reports/complaints" method="GET" target="_blank"
+                <form action="/admin/reports/rooms" method="GET" target="_blank"
                     class="rounded-2xl border border-slate-200 bg-white p-3 shadow-sm shadow-slate-100/50 w-full lg:w-auto">
                     <div class="flex flex-col sm:flex-row items-center gap-2.5">
                         
@@ -166,6 +174,7 @@ function resetFilter() {
                             <tr>
                                 <th class="px-6 py-4">Tracking Code</th>
                                 <th class="px-6 py-4">Kategori</th>
+                                <th class="px-6 py-4">Ruangan</th>
                                 <th class="px-6 py-4">Pelapor</th>
                                 <th class="px-6 py-4">Status</th>
                                 <th class="px-6 py-4">Tanggal Masuk</th>
@@ -194,6 +203,10 @@ function resetFilter() {
                                 <!-- Nama Kategori -->
                                 <td class="px-6 py-4 text-slate-700 font-medium">
                                     {{ complaint.category.name }}
+                                </td>
+
+                                <td class="px-6 py-4 text-slate-700 font-medium">
+                                    {{ complaint.room.name }}
                                 </td>
 
                                 <!-- Identitas Pelapor -->

@@ -225,6 +225,20 @@ function isRouteActive(
                     <span v-if="!isSidebarCondensed" class="truncate animate-fade-in-quick">Manajemen User</span>
                 </Link>
 
+                <Link v-if="user?.role === 'super_admin' || user?.role === 'supervisor'"
+                    :href="route('admin.rooms.index')"
+                    class="flex items-center rounded-lg py-2.5 text-sm font-medium transition-all duration-200 group"
+                    :class="[
+                        isRouteActive('admin.rooms.*')
+                            ? 'bg-blue-600 text-white shadow-md shadow-blue-600/10'
+                            : 'hover:bg-slate-800 hover:text-slate-100',
+                        isSidebarCondensed ? 'justify-center px-0' : 'px-4 gap-3'
+                    ]" :title="isSidebarCondensed ? 'Audit Logs' : ''">
+                    <DocumentTextIcon class="h-5 w-5 shrink-0 transition-colors duration-200"
+                        :class="isRouteActive('admin.rooms.*') ? 'text-white' : 'text-slate-400 group-hover:text-slate-200'" />
+                    <span v-if="!isSidebarCondensed" class="truncate animate-fade-in-quick">Manajemen Ruangan</span>
+                </Link>
+
                 <!-- Menu: Audit Logs (Super Admin & Supervisor) -->
                 <Link v-if="user?.role === 'super_admin' || user?.role === 'supervisor'"
                     :href="route('admin.audit-logs.index')"

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Complaint;
 use App\Models\ComplaintCategory;
+use App\Models\Room;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
@@ -17,6 +18,7 @@ class ComplaintController extends Controller
         $complaints = Complaint::query()
             ->with([
                 'category:id,name',
+                'room:id,name'
             ])
             ->when(
                 $request->search,
@@ -61,6 +63,12 @@ class ComplaintController extends Controller
                         'id',
                         'name',
                     ]),
+                'rooms' => Room::query()
+                    ->orderBy('name')
+                    ->get([
+                        'id',
+                        'name',
+                    ]),
             ]
         );
     }
@@ -70,7 +78,7 @@ class ComplaintController extends Controller
     ) {
         $complaint->load([
             'category',
-
+            'room:id,name',
             'attachments',
 
             'responses' => fn($query) => $query

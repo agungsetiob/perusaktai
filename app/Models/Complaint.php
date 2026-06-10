@@ -19,6 +19,7 @@ class Complaint extends Model
         'status',
         'submitted_at',
         'solved_at',
+        'room_id'
     ];
 
     protected $casts = [
@@ -59,5 +60,10 @@ class Complaint extends Model
         return $this->hasMany(
             WhatsappLog::class
         );
+    }
+
+    public function room()
+    {
+        return $this->belongsTo(Room::class);
     }
 }
