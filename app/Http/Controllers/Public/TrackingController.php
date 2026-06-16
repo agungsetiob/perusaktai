@@ -57,7 +57,7 @@ class TrackingController extends Controller
 
     public function embedLayanan(): Response
     {
-        $targetUrl = 'https://web-rsud.test/dokter/jadwal';
+        $targetUrl = 'https://rsud.tanahbumbukab.go.id/dokter/jadwal';
 
         return Inertia::render('Public/EmbedJadwalDokter', [
             'targetUrl' => $targetUrl
