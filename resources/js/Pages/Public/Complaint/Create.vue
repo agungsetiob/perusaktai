@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { onMounted, onUnmounted, ref } from 'vue'
 import PublicLayout from '@/Layouts/PublicLayout.vue'
 import LoadingButton from '@/Components/LoadingButton.vue'
 
@@ -7,7 +8,7 @@ import type { ComplaintCategory } from '@/types/complaint'
 
 const props = defineProps<{
     categories: ComplaintCategory[],
-    rooms:any[],
+    rooms: any[],
 }>()
 
 const form = useForm({
@@ -17,11 +18,12 @@ const form = useForm({
     name: '',
     phone: '',
     nik: '',
-
     description: '',
-
     attachments: [] as File[],
+    turnstile_token: '',
 })
+const turnstileSiteKey = import.meta.env.VITE_TURNSTILE_SITE_KEY
+const turnstileRef = ref<HTMLElement | null>(null)
 
 function submit() {
     form.post(route('complaints.store'))
@@ -31,6 +33,29 @@ function handleFiles(event: Event) {
     const target = event.target as HTMLInputElement
     form.attachments = Array.from(target.files ?? [])
 }
+
+declare global {
+    interface Window {
+        turnstile: any
+    }
+}
+
+onMounted(() => {
+    const interval = setInterval(() => {
+        if (window.turnstile && turnstileRef.value) {
+            window.turnstile.render(turnstileRef.value, {
+                sitekey: turnstileSiteKey,
+                theme: 'light',
+                callback: (token: string) => {
+                    form.turnstile_token = token
+                },
+            })
+
+            clearInterval(interval)
+        }
+    }, 300)
+})
+
 </script>
 
 <template>
@@ -40,7 +65,6 @@ function handleFiles(event: Event) {
     <PublicLayout>
         <div class="mx-auto max-w-3xl px-4">
 
-            <!-- Header Form Section -->
             <div class="mb-6 text-center sm:text-left">
                 <h1 class="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
                     Form Pengaduan
@@ -56,7 +80,6 @@ function handleFiles(event: Event) {
 
                     <div class="grid gap-4 md:grid-cols-2">
 
-                        <!-- Jenis Pengaduan -->
                         <div>
                             <label class="mb-1.5 block text-sm font-semibold text-gray-700">
                                 Jenis Pengaduan <span class="text-red-500">*</span>
@@ -82,7 +105,6 @@ function handleFiles(event: Event) {
                             </div>
                         </div>
 
-                        <!-- Ruang Perawatan -->
                         <div>
                             <label class="mb-1.5 block text-sm font-semibold text-gray-700">
                                 Ruang Perawatan
@@ -110,7 +132,6 @@ function handleFiles(event: Event) {
 
                     </div>
 
-                    <!-- Pilihan Anonim -->
                     <div class="rounded-xl bg-blue-50/50 p-4 border border-blue-100/50">
                         <label class="flex cursor-pointer items-start gap-3 select-none">
                             <input v-model="form.is_anonymous" type="checkbox"
@@ -125,14 +146,12 @@ function handleFiles(event: Event) {
                         </label>
                     </div>
 
-                    <!-- Grup Data Diri (Dengan Transisi CSS) -->
                     <transition name="fade-slide">
                         <div v-if="!form.is_anonymous"
                             class="space-y-5 rounded-xl border border-gray-100 bg-gray-50/30 p-5">
                             <h3 class="text-xs font-bold uppercase tracking-wider text-gray-400 mb-2">Informasi Pelapor
                             </h3>
 
-                            <!-- Nama -->
                             <div>
                                 <label class="mb-1.5 block text-sm font-semibold text-gray-700">Nama Lengkap</label>
                                 <input v-model="form.name" type="text" placeholder="Masukkan nama lengkap Anda"
@@ -143,7 +162,6 @@ function handleFiles(event: Event) {
                             </div>
 
                             <div class="grid gap-5 sm:grid-cols-2">
-                                <!-- No HP -->
                                 <div>
                                     <label class="mb-1.5 block text-sm font-semibold text-gray-700">Nomor HP /
                                         WhatsApp</label>
@@ -154,7 +172,6 @@ function handleFiles(event: Event) {
                                         form.errors.phone }}</div>
                                 </div>
 
-                                <!-- NIK -->
                                 <div>
                                     <label class="mb-1.5 block text-sm font-semibold text-gray-700">NIK (KTP)</label>
                                     <input v-model="form.nik" type="text"
@@ -168,7 +185,6 @@ function handleFiles(event: Event) {
                         </div>
                     </transition>
 
-                    <!-- Deskripsi -->
                     <div>
                         <label class="mb-1.5 block text-sm font-semibold text-gray-700">
                             Deskripsi / Kronologi Pengaduan <span class="text-red-500">*</span>
@@ -182,7 +198,6 @@ function handleFiles(event: Event) {
                         </div>
                     </div>
 
-                    <!-- Lampiran Dropzone Style -->
                     <div>
                         <label class="mb-1.5 block text-sm font-semibold text-gray-700">
                             Dokumen Pendukung <span class="text-xs font-normal text-gray-400">(Opsional)</span>
@@ -207,7 +222,6 @@ function handleFiles(event: Event) {
                             <p class="text-xs text-gray-400 mt-1">PNG, JPG, PDF hingga 5MB (Bisa pilih beberapa file)
                             </p>
 
-                            <!-- Mini Badge Total File Terpilih -->
                             <div v-if="form.attachments.length > 0"
                                 class="mt-3 inline-flex items-center gap-1.5 rounded-full bg-green-50 px-3 py-1 text-xs font-medium text-green-700 border border-green-200">
                                 📁 {{ form.attachments.length }} File siap diunggah
@@ -219,7 +233,17 @@ function handleFiles(event: Event) {
                         </div>
                     </div>
 
-                    <!-- Submit Button Panel -->
+                    <div class="flex justify-center">
+                        <div ref="turnstileRef"></div>
+                    </div>
+
+                    <div
+                        v-if="form.errors.turnstile_token"
+                        class="text-center text-sm text-red-600"
+                    >
+                        {{ form.errors.turnstile_token }}
+                    </div>
+
                     <div class="pt-1">
                         <LoadingButton :loading="form.processing"
                             class="w-full sm:w-auto shadow-md shadow-blue-500/10 rounded-xl bg-blue-600 px-6 py-3 font-semibold text-white transition-all hover:bg-blue-700">
@@ -234,7 +258,6 @@ function handleFiles(event: Event) {
 </template>
 
 <style scoped>
-/* Efek animasi slide down & up saat kotak data diri disembunyikan */
 .fade-slide-enter-active,
 .fade-slide-leave-active {
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);

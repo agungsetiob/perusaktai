@@ -3,7 +3,6 @@ import Modal from '@/Components/Modal.vue'
 import { useForm } from '@inertiajs/vue3'
 import { watch } from 'vue'
 
-// Import Heroicons untuk mempercantik Header Modal
 import { 
     FolderPlusIcon, 
     PencilSquareIcon, 
@@ -72,7 +71,6 @@ function submit() {
 </script>
 
 <template>
-    <!-- Atur max-width modal agar pas untuk input satu kolom (max-w-md / max-w-lg) -->
     <Modal :show="show" max-width="md" @close="closeModal()">
         <div class="relative overflow-hidden bg-white rounded-xl">
             
@@ -126,7 +124,6 @@ function submit() {
                     </div>
                 </div>
 
-                <!-- Input Checkbox Status Aktif -->
                 <div class="pt-1">
                     <label class="inline-flex items-center gap-2.5 cursor-pointer select-none group">
                         <div class="relative flex items-center">
@@ -145,7 +142,6 @@ function submit() {
                     </label>
                 </div>
 
-                <!-- MODAL FOOTER ACTION BUTTONS -->
                 <div class="flex items-center justify-end gap-2 border-t border-slate-100 pt-4 mt-6">
                     <button 
                         type="button" 

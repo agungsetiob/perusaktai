@@ -43,4 +43,8 @@ return [
         'token' => env('FONNTE_TOKEN'),
     ],
 
+    'turnstile' => [
+        'secret' => env('TURNSTILE_SECRET_KEY'),
+    ],
+
 ];

@@ -66,6 +66,10 @@ class StoreComplaintRequest extends FormRequest
                 'required',
                 'exists:rooms,id',
             ],
+            'turnstile_token' => [
+                'required',
+                'string'
+            ],
         ];
     }
 
