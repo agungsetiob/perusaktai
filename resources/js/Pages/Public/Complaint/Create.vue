@@ -75,7 +75,7 @@ onMounted(() => {
                 </p>
             </div>
 
-            <div class="overflow-hidden rounded-2xl border border-gray-100 bg-white p-6 shadow-sm sm:p-8">
+            <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white p-6 shadow-sm sm:p-8">
                 <form @submit.prevent="submit" class="space-y-6">
 
                     <div class="grid gap-4 md:grid-cols-2">
@@ -233,7 +233,7 @@ onMounted(() => {
                         </div>
                     </div>
 
-                    <div class="flex justify-center">
+                    <div class="flex justify-start">
                         <div ref="turnstileRef"></div>
                     </div>
 
@@ -244,7 +244,7 @@ onMounted(() => {
                         {{ form.errors.turnstile_token }}
                     </div>
 
-                    <div class="pt-1">
+                    <div class="flex justify-end">
                         <LoadingButton :loading="form.processing"
                             class="w-full sm:w-auto shadow-md shadow-blue-500/10 rounded-xl bg-blue-600 px-6 py-3 font-semibold text-white transition-all hover:bg-blue-700">
                             Kirim Pengaduan
