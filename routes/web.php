@@ -29,10 +29,10 @@ Route::get('/', function () {
 });
 
 Route::get('/pengaduan', [ComplaintController::class, 'create'])->name('complaints.create');
-Route::post('/complaints', [ComplaintController::class, 'store'])->name('complaints.store')->middleware('throttle:5,1');
+Route::post('/complaints', [ComplaintController::class, 'store'])->name('complaints.store')->middleware('throttle:3,1');
 Route::get('/complaints/success/{trackingCode}', [ComplaintController::class, 'success'])->name('complaints.success');
-Route::get('/tracking', [TrackingController::class, 'index'])->name('tracking.index');
-Route::get('/tracking/{tracking_code}', [TrackingController::class, 'show'])->name('tracking.show');
+Route::get('/tracking', [TrackingController::class, 'index'])->name('tracking.index')->middleware('throttle:13,1');
+Route::get('/tracking/{tracking_code}', [TrackingController::class, 'show'])->name('tracking.show')->middleware('throttle:13,1');
 Route::get('/jadwal-dokter', [TrackingController::class, 'embedLayanan'])
     ->name('public.embed-jadwal-dokter');
 

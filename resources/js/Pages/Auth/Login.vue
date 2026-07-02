@@ -1,4 +1,5 @@
-<script setup>
+<script setup lang="ts">
+import { onMounted, ref } from 'vue'
 import Checkbox from '@/Components/Checkbox.vue';
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
@@ -19,13 +20,38 @@ const form = useForm({
     email: '',
     password: '',
     remember: false,
+    turnstile_token: '',
 });
+const turnstileSiteKey = import.meta.env.VITE_TURNSTILE_SITE_KEY
+const turnstileRef = ref<HTMLElement | null>(null)
 
 const submit = () => {
     form.post(route('login'), {
         onFinish: () => form.reset('password'),
     });
 };
+
+declare global {
+    interface Window {
+        turnstile: any
+    }
+}
+
+onMounted(() => {
+    const interval = setInterval(() => {
+        if (window.turnstile && turnstileRef.value) {
+            window.turnstile.render(turnstileRef.value, {
+                sitekey: turnstileSiteKey,
+                theme: 'light',
+                callback: (token: string) => {
+                    form.turnstile_token = token
+                },
+            })
+
+            clearInterval(interval)
+        }
+    }, 300)
+})
 </script>
 
 <template>
@@ -109,6 +135,17 @@ const submit = () => {
                                 Ingat saya di perangkat ini
                             </span>
                         </label>
+                    </div>
+
+                    <div class="flex justify-start">
+                        <div ref="turnstileRef"></div>
+                    </div>
+
+                    <div
+                        v-if="form.errors.turnstile_token"
+                        class="text-start text-sm text-red-600"
+                    >
+                        {{ form.errors.turnstile_token }}
                     </div>
 
                     <div class="pt-2">

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import PublicLayout from '@/Layouts/PublicLayout.vue'
 import LoadingButton from '@/Components/LoadingButton.vue'
 
@@ -239,7 +239,7 @@ onMounted(() => {
 
                     <div
                         v-if="form.errors.turnstile_token"
-                        class="text-center text-sm text-red-600"
+                        class="text-start text-sm text-red-600"
                     >
                         {{ form.errors.turnstile_token }}
                     </div>
