@@ -197,7 +197,7 @@ function resetFilter() {
                                 class="transition-colors hover:bg-slate-50/40">
                                 <!-- Kode Tracking -->
                                 <td class="whitespace-nowrap px-6 py-4 font-mono font-bold text-blue-600 text-xs tracking-wider">
-                                    #{{ complaint.tracking_code }}
+                                    {{ complaint.tracking_code }}
                                 </td>
 
                                 <!-- Nama Kategori -->
