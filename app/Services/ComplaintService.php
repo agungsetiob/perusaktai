@@ -19,7 +19,7 @@ class ComplaintService
                 'complaint_category_id' => $data['complaint_category_id'],
                 'room_id' => $data['room_id'],
                 'is_anonymous' => $data['is_anonymous'],
-
+                'reporter_type' => $data['reporter_type'],
                 'name' => $data['is_anonymous']
                     ? null
                     : $data['name'],

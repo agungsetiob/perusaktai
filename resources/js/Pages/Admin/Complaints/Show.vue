@@ -67,7 +67,14 @@ const user = page.props.auth.user as User
                                 Kategori: <span class="text-blue-600 font-medium">{{ complaint.category.name }}</span>
                             </p>
                             <p class="text-xs font-semibold text-slate-400 mt-0.5">
-                                Ruangan: <span class="text-red-600 font-medium">{{ complaint.room.name }}</span>
+                                Ruangan: <span class="text-red-600 font-medium">{{ complaint.room_name }}</span>
+                            </p>
+                            <p class="text-xs font-semibold text-slate-400 mt-0.5">
+                                Pelapor: <span class="text-emerald-600 font-medium">{{
+                                        complaint.reporter_type === 'patient'
+                                            ? 'Pasien'
+                                    : 'Keluarga / Pendamping'
+                                    }}</span>
                             </p>
                         </div>
                     </div>

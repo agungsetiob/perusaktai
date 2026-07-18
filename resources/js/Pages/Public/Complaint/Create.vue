@@ -1,19 +1,34 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import axios from 'axios'
+import { onMounted, ref, watch, computed, onUnmounted } from 'vue' // Tambahkan onUnmounted
 import PublicLayout from '@/Layouts/PublicLayout.vue'
 import LoadingButton from '@/Components/LoadingButton.vue'
-
 import { Head, useForm } from '@inertiajs/vue3'
 import type { ComplaintCategory } from '@/types/complaint'
 
 const props = defineProps<{
     categories: ComplaintCategory[],
-    rooms: any[],
 }>()
+
+const installations = ref<any[]>([])
+const rooms = ref<any[]>([])
+
+// State untuk filter pencarian teks
+const queryInstallation = ref('')
+const queryRoom = ref('')
+
+// State untuk mengontrol visibilitas dropdown terbuka/tutup
+const isInstallationOpen = ref(false)
+const isRoomOpen = ref(false)
+
+// Ref untuk elemen DOM agar bisa mendeteksi klik di luar komponen
+const installationRef = ref<HTMLElement | null>(null)
+const roomRef = ref<HTMLElement | null>(null)
 
 const form = useForm({
     complaint_category_id: '',
     is_anonymous: false,
+    installation_id: '',
     room_id: '',
     name: '',
     phone: '',
@@ -21,9 +36,51 @@ const form = useForm({
     description: '',
     attachments: [] as File[],
     turnstile_token: '',
+    reporter_type: 'patient',
 })
+
 const turnstileSiteKey = import.meta.env.VITE_TURNSTILE_SITE_KEY
 const turnstileRef = ref<HTMLElement | null>(null)
+
+// Computed untuk menyaring data instalasi
+const filteredInstallations = computed(() => {
+    return queryInstallation.value === ''
+        ? installations.value
+        : installations.value.filter((item) =>
+            item.name.toLowerCase().includes(queryInstallation.value.toLowerCase())
+        )
+})
+
+// Computed untuk menyaring data ruangan
+const filteredRooms = computed(() => {
+    return queryRoom.value === ''
+        ? rooms.value
+        : rooms.value.filter((item) =>
+            item.name.toLowerCase().includes(queryRoom.value.toLowerCase())
+        )
+})
+
+// Mengambil nama instalasi yang terpilih untuk ditampilkan di tombol input
+const selectedInstallationName = computed(() => {
+    const found = installations.value.find(i => i.id === form.installation_id)
+    return found ? found.name : 'Pilih Instalasi'
+})
+
+// Mengambil nama ruangan yang terpilih untuk ditampilkan di tombol input
+const selectedRoomName = computed(() => {
+    const found = rooms.value.find(r => r.id === form.room_id)
+    return found ? found.name : 'Pilih Ruangan Pelayanan'
+})
+
+// Fungsi menutup dropdown ketika mengklik di luar area select
+const handleClickOutside = (event: MouseEvent) => {
+    if (installationRef.value && !installationRef.value.contains(event.target as Node)) {
+        isInstallationOpen.value = false
+    }
+    if (roomRef.value && !roomRef.value.contains(event.target as Node)) {
+        isRoomOpen.value = false
+    }
+}
 
 function submit() {
     form.post(route('complaints.store'))
@@ -40,7 +97,11 @@ declare global {
     }
 }
 
-onMounted(() => {
+onMounted(async () => {
+    window.addEventListener('click', handleClickOutside)
+
+    const { data } = await axios.get('/api/simrs/installations')
+    installations.value = data
     const interval = setInterval(() => {
         if (window.turnstile && turnstileRef.value) {
             window.turnstile.render(turnstileRef.value, {
@@ -50,12 +111,30 @@ onMounted(() => {
                     form.turnstile_token = token
                 },
             })
-
             clearInterval(interval)
         }
     }, 300)
 })
 
+onUnmounted(() => {
+    window.removeEventListener('click', handleClickOutside)
+})
+
+watch(
+    () => form.installation_id,
+    async (installationId) => {
+        form.room_id = ''
+        rooms.value = []
+        queryRoom.value = ''
+        if (!installationId) {
+            return
+        }
+        const { data } = await axios.get(
+            `/api/simrs/installations/${installationId}/rooms`
+        )
+        rooms.value = data
+    }
+)
 </script>
 
 <template>
@@ -63,7 +142,7 @@ onMounted(() => {
     <Head title="Buat Pengaduan" />
 
     <PublicLayout>
-        <div class="mx-auto max-w-3xl px-4">
+        <div class="mx-auto max-w-4xl px-4">
 
             <div class="mb-6 text-center sm:text-left">
                 <h1 class="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
@@ -78,7 +157,7 @@ onMounted(() => {
             <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white p-6 shadow-sm sm:p-8">
                 <form @submit.prevent="submit" class="space-y-6">
 
-                    <div class="grid gap-4 md:grid-cols-2">
+                    <div class="grid gap-4 md:grid-cols-3">
 
                         <div>
                             <label class="mb-1.5 block text-sm font-semibold text-gray-700">
@@ -105,31 +184,143 @@ onMounted(() => {
                             </div>
                         </div>
 
-                        <div>
+                        <!-- COMPONENT: Kustom Searchable Select - Instalasi -->
+                        <div class="relative" ref="installationRef">
                             <label class="mb-1.5 block text-sm font-semibold text-gray-700">
-                                Ruang Perawatan
+                                Instalasi
                             </label>
+                            <div>
+                                <!-- Tombol Utama yang menggantikan Select, ketika diklik langsung memunculkan dropdown -->
+                                <button type="button"
+                                    @click="isInstallationOpen = !isInstallationOpen; if (isInstallationOpen) queryInstallation = ''"
+                                    class="flex w-full items-center justify-between rounded-xl border border-gray-300 bg-gray-50 px-4 py-3 text-sm text-gray-800 outline-none transition-all focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-500/20">
+                                    <span :class="form.installation_id ? 'text-gray-800' : 'text-gray-400'">
+                                        {{ selectedInstallationName }}
+                                    </span>
+                                    <!-- Icon Panah -->
+                                    <svg class="h-4 w-4 text-gray-400 transition-transform"
+                                        :class="{ 'rotate-180': isInstallationOpen }" fill="none" viewBox="0 0 24 24"
+                                        stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M19 9l-7 7-7-7" />
+                                    </svg>
+                                </button>
 
-                            <div class="relative">
-                                <select v-model="form.room_id"
-                                    class="w-full rounded-xl border border-gray-300 bg-gray-50 px-4 py-3 text-sm text-gray-800 outline-none transition-all focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-500/20"
-                                    :class="{ 'border-red-500 bg-red-50/30': form.errors.room_id }">
-                                    <option value="">
-                                        Pilih Ruang Perawatan
-                                    </option>
-
-                                    <option v-for="room in rooms" :key="room.id" :value="room.id">
-                                        {{ room.name }}
-                                    </option>
-                                </select>
+                                <!-- Dropdown Menu -->
+                                <div v-if="isInstallationOpen"
+                                    class="absolute z-50 mt-1 max-h-60 w-full overflow-hidden rounded-xl border border-gray-200 bg-white shadow-lg ring-1 ring-black/5">
+                                    <!-- Input Kolom Pencarian -->
+                                    <div class="border-b border-gray-100 p-2 bg-gray-50">
+                                        <input v-model="queryInstallation" type="text"
+                                            placeholder="Ketik untuk mencari..."
+                                            class="w-full rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-xs outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                                            @click.stop />
+                                    </div>
+                                    <!-- Daftar Pilihan -->
+                                    <ul class="max-h-44 overflow-y-auto p-1 text-sm">
+                                        <li v-if="filteredInstallations.length === 0"
+                                            class="cursor-default select-none px-4 py-2 text-xs text-gray-500">
+                                            Instalasi tidak ditemukan.
+                                        </li>
+                                        <li v-for="installation in filteredInstallations" :key="installation.id"
+                                            @click="form.installation_id = installation.id; isInstallationOpen = false"
+                                            :class="['cursor-pointer select-none rounded-lg py-2 px-4 transition-colors hover:bg-blue-600 hover:text-white', form.installation_id === installation.id ? 'bg-blue-50 font-semibold text-blue-600 hover:bg-blue-600 hover:text-white' : 'text-gray-900']">
+                                            {{ installation.name }}
+                                        </li>
+                                    </ul>
+                                </div>
                             </div>
+                        </div>
 
-                            <div v-if="form.errors.room_id"
-                                class="mt-1.5 flex items-center gap-1 text-xs font-medium text-red-600">
+                        <!-- COMPONENT: Kustom Searchable Select - Ruangan Pelayanan -->
+                        <div class="relative" ref="roomRef">
+                            <label class="mb-1.5 block text-sm font-semibold text-gray-700">
+                                Ruangan Pelayanan
+                            </label>
+                            <div>
+                                <button type="button" :disabled="!form.installation_id"
+                                    @click="isRoomOpen = !isRoomOpen; if (isRoomOpen) queryRoom = ''"
+                                    class="flex w-full items-center justify-between rounded-xl border border-gray-300 bg-gray-50 px-4 py-3 text-sm text-gray-800 outline-none transition-all disabled:opacity-60 focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-500/20"
+                                    :class="{ 'border-red-500 bg-red-50/30': form.errors.room_id }">
+                                    <span :class="form.room_id ? 'text-gray-800' : 'text-gray-400'">
+                                        {{ form.installation_id ? selectedRoomName : 'Pilih Instalasi terlebih dahulu'
+                                        }}
+                                    </span>
+                                    <svg class="h-4 w-4 text-gray-400 transition-transform"
+                                        :class="{ 'rotate-180': isRoomOpen }" fill="none" viewBox="0 0 24 24"
+                                        stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M19 9l-7 7-7-7" />
+                                    </svg>
+                                </button>
+
+                                <!-- Dropdown Menu -->
+                                <div v-if="isRoomOpen && form.installation_id"
+                                    class="absolute z-50 mt-1 max-h-60 w-full overflow-hidden rounded-xl border border-gray-200 bg-white shadow-lg ring-1 ring-black/5">
+                                    <!-- Input Kolom Pencarian -->
+                                    <div class="border-b border-gray-100 p-2 bg-gray-50">
+                                        <input v-model="queryRoom" type="text" placeholder="Ketik untuk mencari..."
+                                            class="w-full rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-xs outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                                            @click.stop />
+                                    </div>
+                                    <!-- Daftar Pilihan -->
+                                    <ul class="max-h-44 overflow-y-auto p-1 text-sm">
+                                        <li v-if="filteredRooms.length === 0"
+                                            class="cursor-default select-none px-4 py-2 text-xs text-gray-500">
+                                            Ruangan tidak ditemukan.
+                                        </li>
+                                        <li v-for="room in filteredRooms" :key="room.id"
+                                            @click="form.room_id = room.id; isRoomOpen = false"
+                                            :class="['cursor-pointer select-none rounded-lg py-2 px-4 transition-colors hover:bg-blue-600 hover:text-white', form.room_id === room.id ? 'bg-blue-50 font-semibold text-blue-600 hover:bg-blue-600 hover:text-white' : 'text-gray-900']">
+                                            {{ room.name }}
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div v-if="form.errors.room_id" class="mt-1 text-xs text-red-600">
                                 ⚠ {{ form.errors.room_id }}
                             </div>
                         </div>
 
+                    </div>
+
+                    <div>
+                        <label class="mb-2 block text-sm font-semibold text-gray-700">
+                            Pengadu adalah
+                            <span class="text-red-500">*</span>
+                        </label>
+
+                        <div class="grid grid-cols-2 gap-3">
+
+                            <label
+                                class="flex cursor-pointer items-center gap-3 rounded-xl border border-gray-300 p-3 hover:border-blue-500"
+                                :class="form.reporter_type === 'patient'
+                                    ? 'border-blue-500 bg-blue-50'
+                                    : ''">
+                                <input type="radio" value="patient" v-model="form.reporter_type">
+
+                                <span class="font-medium">
+                                    Pasien
+                                </span>
+                            </label>
+
+                            <label
+                                class="flex cursor-pointer items-center gap-3 rounded-xl border border-gray-300 p-3 hover:border-blue-500"
+                                :class="form.reporter_type === 'family'
+                                    ? 'border-blue-500 bg-blue-50'
+                                    : ''">
+                                <input type="radio" value="family" v-model="form.reporter_type">
+
+                                <span class="font-medium">
+                                    Keluarga / Pendamping
+                                </span>
+                            </label>
+
+                        </div>
+
+                        <div v-if="form.errors.reporter_type" class="mt-1 text-xs text-red-600">
+                            {{ form.errors.reporter_type }}
+                        </div>
                     </div>
 
                     <div class="rounded-xl bg-blue-50/50 p-4 border border-blue-100/50">
@@ -138,7 +329,7 @@ onMounted(() => {
                                 class="mt-0.5 h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500">
                             <div class="text-sm">
                                 <span class="font-semibold text-blue-900">Kirim sebagai anonim</span>
-                                <p class="text-xs text-red-500 mt-0.5">
+                                <p class="text-xs text-green-600 mt-0.5">
                                     Anda tidak menerima notifikasi whatsapp saat aduan selesai ditindaklanjuti jika
                                     memilih anonim.
                                 </p>
@@ -173,7 +364,8 @@ onMounted(() => {
                                 </div>
 
                                 <div>
-                                    <label class="mb-1.5 block text-sm font-semibold text-gray-700">NIK (KTP)</label>
+                                    <label class="mb-1.5 block text-sm font-semibold text-gray-700">NIK <span
+                                            class="text-xs font-normal text-gray-400">(Opsional)</span></label>
                                     <input v-model="form.nik" type="text"
                                         placeholder="16 digit Nomor Induk Kependudukan"
                                         class="w-full rounded-xl border border-gray-300 bg-white px-4 py-2.5 text-sm outline-none transition-all focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
@@ -200,7 +392,7 @@ onMounted(() => {
 
                     <div>
                         <label class="mb-1.5 block text-sm font-semibold text-gray-700">
-                            Dokumen Pendukung <span class="text-xs font-normal text-gray-400">(Opsional)</span>
+                            Bukti Pendukung <span class="text-xs font-normal text-gray-400">(Opsional)</span>
                         </label>
 
                         <div
@@ -237,10 +429,7 @@ onMounted(() => {
                         <div ref="turnstileRef"></div>
                     </div>
 
-                    <div
-                        v-if="form.errors.turnstile_token"
-                        class="text-start text-sm text-red-600"
-                    >
+                    <div v-if="form.errors.turnstile_token" class="text-start text-sm text-red-600">
                         {{ form.errors.turnstile_token }}
                     </div>
 

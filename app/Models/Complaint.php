@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use App\Services\SimrsRoomService;
 
 class Complaint extends Model
 {
@@ -19,7 +20,12 @@ class Complaint extends Model
         'status',
         'submitted_at',
         'solved_at',
-        'room_id'
+        'room_id',
+        'reporter_type'
+    ];
+
+    protected $appends = [
+        'room_name',
     ];
 
     protected $casts = [
@@ -62,8 +68,18 @@ class Complaint extends Model
         );
     }
 
-    public function room()
+    // public function room()
+    // {
+    //     return $this->belongsTo(Room::class);
+    // }
+
+    public function getRoomNameAttribute(): ?string
     {
-        return $this->belongsTo(Room::class);
+        if (!$this->room_id) {
+            return null;
+        }
+
+        return app(SimrsRoomService::class)
+            ->find($this->room_id)?->DESKRIPSI;
     }
 }

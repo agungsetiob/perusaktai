@@ -1,0 +1,1 @@
+function e(e){if(!e)return`-`;let t=new Date(e);return`${new Intl.DateTimeFormat(`id-ID`,{day:`numeric`,month:`long`,year:`numeric`}).format(t)}, ${new Intl.DateTimeFormat(`id-ID`,{hour:`2-digit`,minute:`2-digit`}).format(t)}`}export{e as t};

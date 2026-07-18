@@ -39,7 +39,7 @@ class StoreComplaintRequest extends FormRequest
             ],
 
             'nik' => [
-                'required_if:is_anonymous,false',
+                //'required_if:is_anonymous,false',
                 'nullable',
                 'digits:16',
             ],
@@ -62,13 +62,23 @@ class StoreComplaintRequest extends FormRequest
                 'max:5120', // 5MB
             ],
 
+            // 'room_id' => [
+            //     'required',
+            //     'exists:rooms,id',
+            // ],
             'room_id' => [
                 'required',
-                'exists:rooms,id',
+                'string',
+                'max:20',
             ],
             'turnstile_token' => [
                 'required',
                 'string'
+            ],
+
+            'reporter_type' => [
+                'required',
+                'in:patient,family',
             ],
         ];
     }
@@ -102,9 +112,9 @@ class StoreComplaintRequest extends FormRequest
 
             'description.required' =>
                 'Deskripsi keluhan/aduan wajib diisi.',
-            
+
             'room_id.required' =>
-                'Ruangan perawatan wajib dipilih'
+                'Ruangan pelayanan wajib dipilih'
         ];
     }
 

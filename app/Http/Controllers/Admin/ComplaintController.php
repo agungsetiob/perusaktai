@@ -18,7 +18,7 @@ class ComplaintController extends Controller
         $complaints = Complaint::query()
             ->with([
                 'category:id,name',
-                'room:id,name'
+                // 'room:id,name'
             ])
             ->when(
                 $request->search,
@@ -45,6 +45,16 @@ class ComplaintController extends Controller
             ->latest()
             ->paginate(4)
             ->withQueryString();
+        $roomService = app(\App\Services\SimrsRoomService::class);
+
+        $complaints->getCollection()->transform(function ($complaint) use ($roomService) {
+
+            $room = $roomService->find($complaint->room_id);
+
+            $complaint->room_name = $room?->DESKRIPSI;
+
+            return $complaint;
+        });
 
         return Inertia::render(
             'Admin/Complaints/Index',
@@ -63,12 +73,12 @@ class ComplaintController extends Controller
                         'id',
                         'name',
                     ]),
-                'rooms' => Room::query()
-                    ->orderBy('name')
-                    ->get([
-                        'id',
-                        'name',
-                    ]),
+                // 'rooms' => Room::query()
+                //     ->orderBy('name')
+                //     ->get([
+                //         'id',
+                //         'name',
+                //     ]),
             ]
         );
     }
@@ -78,7 +88,7 @@ class ComplaintController extends Controller
     ) {
         $complaint->load([
             'category',
-            'room:id,name',
+            // 'room:id,name',
             'attachments',
 
             'responses' => fn($query) => $query
@@ -112,6 +122,11 @@ class ComplaintController extends Controller
                 ];
             }
         );
+
+        $room = app(\App\Services\SimrsRoomService::class)
+            ->find($complaint->room_id);
+
+        $complaint->room_name = $room?->DESKRIPSI;
 
         return Inertia::render(
             'Admin/Complaints/Show',
