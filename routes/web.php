@@ -13,6 +13,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\Public\ComplaintController;
 use App\Http\Controllers\Public\TrackingController;
+use App\Http\Controllers\Api\SimrsRoomController;
 use App\Models\ComplaintCategory;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
@@ -35,6 +36,11 @@ Route::get('/tracking', [TrackingController::class, 'index'])->name('tracking.in
 Route::get('/tracking/{tracking_code}', [TrackingController::class, 'show'])->name('tracking.show')->middleware('throttle:13,1');
 Route::get('/jadwal-dokter', [TrackingController::class, 'embedLayanan'])
     ->name('public.embed-jadwal-dokter');
+
+Route::middleware('throttle:19,2')->prefix('api')->group(function () {
+    Route::get('/simrs/installations', [SimrsRoomController::class, 'installations'])->name('ajax.simrs.installations');
+    Route::get('/simrs/installations/{installation}/rooms', [SimrsRoomController::class, 'rooms'])->name('ajax.simrs.rooms');
+});
 
 /*
 |--------------------------------------------------------------------------
