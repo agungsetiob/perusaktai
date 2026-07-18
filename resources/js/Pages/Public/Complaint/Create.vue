@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import axios from 'axios'
-import { onMounted, ref, watch, computed, onUnmounted } from 'vue' // Tambahkan onUnmounted
+import { onMounted, ref, watch, computed, onUnmounted } from 'vue'
 import PublicLayout from '@/Layouts/PublicLayout.vue'
 import LoadingButton from '@/Components/LoadingButton.vue'
 import { Head, useForm } from '@inertiajs/vue3'
 import type { ComplaintCategory } from '@/types/complaint'
+import api from '@/utils/api';
 
 const props = defineProps<{
     categories: ComplaintCategory[],
@@ -13,15 +13,12 @@ const props = defineProps<{
 const installations = ref<any[]>([])
 const rooms = ref<any[]>([])
 
-// State untuk filter pencarian teks
 const queryInstallation = ref('')
 const queryRoom = ref('')
 
-// State untuk mengontrol visibilitas dropdown terbuka/tutup
 const isInstallationOpen = ref(false)
 const isRoomOpen = ref(false)
 
-// Ref untuk elemen DOM agar bisa mendeteksi klik di luar komponen
 const installationRef = ref<HTMLElement | null>(null)
 const roomRef = ref<HTMLElement | null>(null)
 
@@ -100,8 +97,8 @@ declare global {
 onMounted(async () => {
     window.addEventListener('click', handleClickOutside)
 
-    const { data } = await axios.get('/api/simrs/installations')
-    installations.value = data
+    const { data } = await api.get('/simrs/installations');
+    installations.value = data;
     const interval = setInterval(() => {
         if (window.turnstile && turnstileRef.value) {
             window.turnstile.render(turnstileRef.value, {
@@ -123,18 +120,15 @@ onUnmounted(() => {
 watch(
     () => form.installation_id,
     async (installationId) => {
-        form.room_id = ''
-        rooms.value = []
-        queryRoom.value = ''
-        if (!installationId) {
-            return
-        }
-        const { data } = await axios.get(
-            `/api/simrs/installations/${installationId}/rooms`
-        )
-        rooms.value = data
+        form.room_id = '';
+        rooms.value = [];
+        queryRoom.value = '';
+        if (!installationId) return;
+
+        const { data } = await api.get(`/simrs/installations/${installationId}/rooms`);
+        rooms.value = data;
     }
-)
+);
 </script>
 
 <template>
@@ -154,7 +148,7 @@ watch(
                 </p>
             </div>
 
-            <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white p-6 shadow-sm sm:p-8">
+            <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white p-6 shadow-sm sm:p-8 mb-4">
                 <form @submit.prevent="submit" class="space-y-6">
 
                     <div class="grid gap-4 md:grid-cols-3">
@@ -213,7 +207,7 @@ watch(
                                     <div class="border-b border-gray-100 p-2 bg-gray-50">
                                         <input v-model="queryInstallation" type="text"
                                             placeholder="Ketik untuk mencari..."
-                                            class="w-full rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-xs outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                                            class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                                             @click.stop />
                                     </div>
                                     <!-- Daftar Pilihan -->
@@ -243,7 +237,7 @@ watch(
                                     class="flex w-full items-center justify-between rounded-xl border border-gray-300 bg-gray-50 px-4 py-3 text-sm text-gray-800 outline-none transition-all disabled:opacity-60 focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-500/20"
                                     :class="{ 'border-red-500 bg-red-50/30': form.errors.room_id }">
                                     <span :class="form.room_id ? 'text-gray-800' : 'text-gray-400'">
-                                        {{ form.installation_id ? selectedRoomName : 'Pilih Instalasi terlebih dahulu'
+                                        {{ form.installation_id ? selectedRoomName : 'Pilih Instalasi dahulu'
                                         }}
                                     </span>
                                     <svg class="h-4 w-4 text-gray-400 transition-transform"
@@ -260,7 +254,7 @@ watch(
                                     <!-- Input Kolom Pencarian -->
                                     <div class="border-b border-gray-100 p-2 bg-gray-50">
                                         <input v-model="queryRoom" type="text" placeholder="Ketik untuk mencari..."
-                                            class="w-full rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-xs outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                                            class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                                             @click.stop />
                                     </div>
                                     <!-- Daftar Pilihan -->
@@ -286,11 +280,11 @@ watch(
 
                     <div>
                         <label class="mb-2 block text-sm font-semibold text-gray-700">
-                            Pengadu adalah
+                            Pelapor
                             <span class="text-red-500">*</span>
                         </label>
 
-                        <div class="grid grid-cols-2 gap-3">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
 
                             <label
                                 class="flex cursor-pointer items-center gap-3 rounded-xl border border-gray-300 p-3 hover:border-blue-500"
@@ -426,7 +420,7 @@ watch(
                     </div>
 
                     <div class="flex justify-start">
-                        <div ref="turnstileRef"></div>
+                        <div ref="turnstileRef" class="scale-90 sm:scale-100 origin-top-left"></div>
                     </div>
 
                     <div v-if="form.errors.turnstile_token" class="text-start text-sm text-red-600">
@@ -435,7 +429,7 @@ watch(
 
                     <div class="flex justify-end">
                         <LoadingButton :loading="form.processing"
-                            class="w-full sm:w-auto shadow-md shadow-blue-500/10 rounded-xl bg-blue-600 px-6 py-3 font-semibold text-white transition-all hover:bg-blue-700">
+                            class="w-full sm:w-auto shadow-md shadow-blue-500/10 rounded-xl bg-blue-600 px-6 py-3 font-semibold text-white transition-all hover:bg-blue-700 mb-2">
                             Kirim Pengaduan
                         </LoadingButton>
                     </div>
