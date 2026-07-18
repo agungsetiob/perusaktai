@@ -16,7 +16,7 @@ use App\Http\Controllers\Api\SimrsRoomController;
 |
 */
 
-Route::middleware('throttle:27,1')->group(function () {
+Route::middleware('throttle:19,1')->group(function () {
     Route::get('/simrs/installations', [SimrsRoomController::class, 'installations']);
     Route::get('/simrs/installations/{installation}/rooms', [SimrsRoomController::class, 'rooms']);
 });
