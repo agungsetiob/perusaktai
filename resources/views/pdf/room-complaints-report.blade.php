@@ -21,7 +21,7 @@
         }
 
         /* =========================
-           KOP SURAT (MENGGUNAKAN TABEL AGAR AMAN DI PDF)
+           KOP SURAT
         ========================== */
         .kop-table {
             width: 100%;
@@ -269,10 +269,11 @@
             <thead>
                 <tr>
                     <th width="6%">No</th>
-                    <th width="20%">Kode Tracking</th>
-                    <th width="18%">Tanggal Masuk</th>
-                    <th width="32%">Kategori</th>
-                    <th width="24%">Status</th>
+                    <th width="27%">Kode Tracking</th>
+                    <th width="15%">Tanggal Masuk</th>
+                    <th width="19%">Kategori</th>
+                    <th width="20%">Pelapor</th>
+                    <th width="13%">Status</th>
                 </tr>
             </thead>
             <tbody>
@@ -283,7 +284,8 @@
                     <td class="text-center">
                         {{ \Carbon\Carbon::parse($complaint->submitted_at)->translatedFormat('d F Y') }}
                     </td>
-                    <td>{{ $complaint->category?->name ?? '-' }}</td>
+                    <td class="text-center">{{ $complaint->category?->name ?? '-' }}</td>
+                    <td class="text-center">{{ $complaint->reporter_type === 'patient'? 'Pasien': 'Keluarga / Pendamping' }}</td>
                     <td class="text-center">
                         @php
                             $statusKey = strtolower(str_replace(' ', '_', $complaint->status ?? ''));

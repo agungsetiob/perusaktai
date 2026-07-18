@@ -16,7 +16,7 @@ import {
 
 const props = defineProps<{
     complaints: any
-    rooms:any
+    // rooms:any
     categories: any[]
     filters: {
         search: string | null
@@ -206,14 +206,14 @@ function resetFilter() {
                                 </td>
 
                                 <td class="px-6 py-4 text-slate-700 font-medium">
-                                    {{ complaint.room.name }}
+                                    {{ complaint.room_name }}
                                 </td>
 
                                 <!-- Identitas Pelapor -->
                                 <td class="px-6 py-4">
                                     <span v-if="complaint.is_anonymous"
                                         class="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-semibold text-slate-600 border border-slate-200">
-                                        🕵️ Anonim
+                                        Anonim
                                     </span>
                                     <span v-else class="text-slate-800 font-medium">
                                         {{ complaint.name }}

@@ -7,6 +7,10 @@ use App\Models\Room;
 
 class RoomComplaintReportService
 {
+    public function __construct(
+        protected SimrsRoomService $simrsRoomService
+    ) {
+    }
     public function generate(
         ?string $startDate,
         ?string $endDate
@@ -32,60 +36,53 @@ class RoomComplaintReportService
 
         $complaints = $query
             ->with([
-                'room:id,name',
+                // 'room:id,name',
                 'category:id,name',
             ])
             ->get();
+        $roomService = app(SimrsRoomService::class);
 
-        $roomSummary = Room::query()
-            ->withCount([
-                'complaints' => function ($query)
-                use (
-                    $startDate,
-                    $endDate
-                ) {
+        $complaints->each(function ($complaint) use ($roomService) {
 
-                    if ($startDate) {
-                        $query->whereDate(
-                            'submitted_at',
-                            '>=',
-                            $startDate
-                        );
-                    }
+            $room = $roomService->find($complaint->room_id);
 
-                    if ($endDate) {
-                        $query->whereDate(
-                            'submitted_at',
-                            '<=',
-                            $endDate
-                        );
-                    }
-                }
-            ])
-            ->orderByDesc(
-                'complaints_count'
-            )
-            ->get();
+            $complaint->room_name = $room?->DESKRIPSI;
+
+        });
+
+        $roomSummary = $complaints
+            ->groupBy('room_name')
+            ->map(function ($items, $roomName) {
+
+                return (object) [
+                    'name' => $roomName ?: 'Tanpa Ruangan',
+                    'complaints_count' => $items->count(),
+                ];
+
+            })
+            ->sortByDesc('complaints_count')
+            ->values();
 
         $groupedComplaints = $complaints
-            ->groupBy(
-                fn($complaint) =>
-                $complaint->room?->name
-                ?? 'Tanpa Ruangan'
-            );
+            ->groupBy(function ($complaint) {
+
+                return $complaint->room_name
+                    ?: 'Tanpa Ruangan';
+
+            });
 
         return [
             'startDate' => $startDate,
             'endDate' => $endDate,
 
             'roomSummary' =>
-            $roomSummary,
+                $roomSummary,
 
             'groupedComplaints' =>
-            $groupedComplaints,
+                $groupedComplaints,
 
             'totalComplaints' =>
-            $complaints->count(),
+                $complaints->count(),
         ];
     }
 }

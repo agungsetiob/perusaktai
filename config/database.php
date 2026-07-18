@@ -64,6 +64,22 @@ return [
             ]) : [],
         ],
 
+        'simrs' => [
+            'driver' => 'mysql',
+            'host' => env('SIMRS_DB_HOST'),
+            'port' => env('SIMRS_DB_PORT', 3306),
+            'database' => env('SIMRS_DB_DATABASE'),
+            'username' => env('SIMRS_DB_USERNAME'),
+            'password' => env('SIMRS_DB_PASSWORD'),
+            'unix_socket' => env('SIMRS_DB_SOCKET', ''),
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'strict' => false,
+            'engine' => null,
+        ],
+
         'mariadb' => [
             'driver' => 'mariadb',
             'url' => env('DB_URL'),
@@ -149,7 +165,7 @@ return [
 
         'options' => [
             'cluster' => env('REDIS_CLUSTER', 'redis'),
-            'prefix' => env('REDIS_PREFIX', Str::slug((string) env('APP_NAME', 'laravel')).'-database-'),
+            'prefix' => env('REDIS_PREFIX', Str::slug((string) env('APP_NAME', 'laravel')) . '-database-'),
             'persistent' => env('REDIS_PERSISTENT', false),
         ],
 

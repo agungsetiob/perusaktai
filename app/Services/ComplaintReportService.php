@@ -137,7 +137,6 @@ class ComplaintReportService
                     : 0,
             ],
 
-            // Array SLA di bawah ini sekarang mengirimkan string teks, bukan angka desimal lagi
             'sla' => [
                 'avg_hours' => $avgResolution,
                 'fastest_hours' => $fastestResolution,

@@ -1,0 +1,27 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::table('complaints', function (Blueprint $table) {
+            $table->enum('reporter_type', [
+                'patient',
+                'family',
+            ])
+            ->default('patient')
+            ->after('is_anonymous');
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::table('complaints', function (Blueprint $table) {
+            $table->dropColumn('reporter_type');
+        });
+    }
+};
