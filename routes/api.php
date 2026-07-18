@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\SimrsRoomController;
 
@@ -16,7 +15,7 @@ use App\Http\Controllers\Api\SimrsRoomController;
 |
 */
 
-Route::middleware('throttle:19,1')->group(function () {
+Route::middleware(['throttle:19,2', 'api.key'])->group(function () {
     Route::get('/simrs/installations', [SimrsRoomController::class, 'installations']);
     Route::get('/simrs/installations/{installation}/rooms', [SimrsRoomController::class, 'rooms']);
 });
