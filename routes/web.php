@@ -37,7 +37,7 @@ Route::get('/tracking/{tracking_code}', [TrackingController::class, 'show'])->na
 Route::get('/jadwal-dokter', [TrackingController::class, 'embedLayanan'])
     ->name('public.embed-jadwal-dokter');
 
-Route::middleware('throttle:19,2')->prefix('api')->group(function () {
+Route::middleware(['throttle:11,1', 'ajax.only'])->prefix('api')->group(function () {
     Route::get('/simrs/installations', [SimrsRoomController::class, 'installations'])->name('ajax.simrs.installations');
     Route::get('/simrs/installations/{installation}/rooms', [SimrsRoomController::class, 'rooms'])->name('ajax.simrs.rooms');
 });
