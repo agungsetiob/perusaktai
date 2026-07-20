@@ -43,7 +43,7 @@ class ComplaintController extends Controller
                 )
             )
             ->latest()
-            ->paginate(4)
+            ->paginate(10)
             ->withQueryString();
         $roomService = app(\App\Services\SimrsRoomService::class);
 

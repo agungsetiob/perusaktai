@@ -14,6 +14,9 @@ import {
     BellIcon,
     ChevronDownIcon,
     UserIcon,
+    StarIcon,
+    InboxStackIcon,
+    BugAntIcon
 } from '@heroicons/vue/24/outline'
 
 const page = usePage<any>()
@@ -234,9 +237,24 @@ function isRouteActive(
                             : 'hover:bg-slate-800 hover:text-slate-100',
                         isSidebarCondensed ? 'justify-center px-0' : 'px-4 gap-3'
                     ]" :title="isSidebarCondensed ? 'Audit Logs' : ''">
-                    <DocumentTextIcon class="h-5 w-5 shrink-0 transition-colors duration-200"
+                    <BugAntIcon class="h-5 w-5 shrink-0 transition-colors duration-200"
                         :class="isRouteActive('admin.rooms.*') ? 'text-white' : 'text-slate-400 group-hover:text-slate-200'" />
                     <span v-if="!isSidebarCondensed" class="truncate animate-fade-in-quick">Manajemen Ruangan</span>
+                </Link>
+
+                <!-- Menu: Kategori -->
+                <Link v-if="user?.role === 'super_admin' || user?.role === 'admin' || user?.role === 'supervisor'"
+                    :href="route('admin.simrs.rooms.index')"
+                    class="flex items-center rounded-lg py-2.5 text-sm font-medium transition-all duration-200 group"
+                    :class="[
+                        isRouteActive('admin.simrs.rooms.*')
+                            ? 'bg-blue-600 text-white shadow-md shadow-blue-600/10'
+                            : 'hover:bg-slate-800 hover:text-slate-100',
+                        isSidebarCondensed ? 'justify-center px-0' : 'px-4 gap-3'
+                    ]" :title="isSidebarCondensed ? 'Ruangan SIMRS' : ''">
+                    <StarIcon class="h-5 w-5 shrink-0 transition-colors duration-200"
+                        :class="isRouteActive('admin.simrs.rooms.*') ? 'text-white' : 'text-slate-400 group-hover:text-slate-200'" />
+                    <span v-if="!isSidebarCondensed" class="truncate animate-fade-in-quick">Ruangan SIMRS</span>
                 </Link>
 
                 <!-- Menu: Audit Logs (Super Admin & Supervisor) -->
@@ -249,7 +267,7 @@ function isRouteActive(
                             : 'hover:bg-slate-800 hover:text-slate-100',
                         isSidebarCondensed ? 'justify-center px-0' : 'px-4 gap-3'
                     ]" :title="isSidebarCondensed ? 'Audit Logs' : ''">
-                    <DocumentTextIcon class="h-5 w-5 shrink-0 transition-colors duration-200"
+                    <InboxStackIcon class="h-5 w-5 shrink-0 transition-colors duration-200"
                         :class="isRouteActive('admin.audit-logs.*') ? 'text-white' : 'text-slate-400 group-hover:text-slate-200'" />
                     <span v-if="!isSidebarCondensed" class="truncate animate-fade-in-quick">Audit Logs</span>
                 </Link>
