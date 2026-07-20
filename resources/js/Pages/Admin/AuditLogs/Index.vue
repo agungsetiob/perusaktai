@@ -8,7 +8,6 @@ import { formatDateTime } from '@/utils/date'
 import {
     ClockIcon,
     UserIcon,
-    CpuChipIcon,
     DocumentMagnifyingGlassIcon,
     FunnelIcon,
     MagnifyingGlassIcon

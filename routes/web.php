@@ -14,6 +14,7 @@ use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\Public\ComplaintController;
 use App\Http\Controllers\Public\TrackingController;
 use App\Http\Controllers\Api\SimrsRoomController;
+use App\Http\Controllers\Admin\SimrsRoomController as AdminSimrsRoomController;
 use App\Models\ComplaintCategory;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
@@ -93,6 +94,9 @@ Route::middleware(['auth', 'active', 'role:admin,supervisor,super_admin'])
             ->name('complaints.reject')->middleware(['role:supervisor,super_admin']);
         Route::post('/complaints/{complaint}/solve', [ComplaintResponseController::class, 'solve'])
             ->name('complaints.solve');
+        
+        Route::get('/simrs/rooms',[AdminSimrsRoomController::class, 'index'])
+            ->name('simrs.rooms.index');
 
         /*
         |------------------------------------------------------------------
