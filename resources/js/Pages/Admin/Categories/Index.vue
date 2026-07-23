@@ -4,6 +4,7 @@ import type { PageProps } from '@inertiajs/core'
 import AdminLayout from '@/Layouts/AdminLayout.vue'
 import CategoryFormModal from '@/Components/CategoryFormModal.vue'
 import Modal from '@/Components/Modal.vue'
+import FlashMessage from '@/Components/FlashMessage.vue'
 import { ref, computed } from 'vue'
 import type { User } from '@/types'
 import { 
@@ -79,6 +80,7 @@ function handleDeactivate() {
     <Head title="Kategori Pengaduan" />
 
     <AdminLayout>
+        <FlashMessage />
         <div class="space-y-5 animate-fade-in">
 
             <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between border-b border-slate-200 pb-4">

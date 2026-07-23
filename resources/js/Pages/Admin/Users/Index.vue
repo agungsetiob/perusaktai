@@ -3,7 +3,8 @@ import { Head, router } from '@inertiajs/vue3'
 import { ref } from 'vue'
 import AdminLayout from '@/Layouts/AdminLayout.vue'
 import UserFormModal from '@/Components/UserFormModal.vue'
-import Modal from '@/Components/Modal.vue' // 1. Import komponen Modal bawaan project
+import Modal from '@/Components/Modal.vue'
+import FlashMessage from '@/Components/FlashMessage.vue'
 import { 
     UserPlusIcon, 
     PencilSquareIcon, 
@@ -86,6 +87,7 @@ const formatRole = (role: string) => {
     <Head title="Manajemen User" />
 
     <AdminLayout>
+        <FlashMessage />
         <div class="space-y-5 animate-fade-in">
             
             <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between border-b border-slate-100 pb-5">

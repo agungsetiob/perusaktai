@@ -6,6 +6,7 @@ import AdminLayout from '@/Layouts/AdminLayout.vue'
 import StatusBadge from '@/Components/StatusBadge.vue'
 import Pagination from '@/Components/Pagination.vue'
 import EditSubmittedAtModal from './Partials/EditSubmittedAtModal.vue'
+import FlashMessage from '@/Components/FlashMessage.vue'
 import {
     FunnelIcon,
     MagnifyingGlassIcon,
@@ -50,30 +51,6 @@ function openSubmittedAtModal(complaint: any) {
 
 }
 
-function updateSubmittedAt() {
-
-    submittedAtForm.patch(
-
-        route(
-            'admin.complaints.update-submitted-at',
-            selectedComplaint.value.id
-        ),
-
-        {
-            preserveScroll: true,
-
-            onSuccess() {
-
-                showSubmittedAtModal.value = false
-
-            }
-
-        }
-
-    )
-
-}
-
 function applyFilter() {
     router.get(
         route('admin.complaints.index'),
@@ -98,6 +75,7 @@ function resetFilter() {
     <Head title="Daftar Pengaduan" />
 
     <AdminLayout>
+        <FlashMessage />
         <div class="space-y-5 animate-fade-in">
 
             <!-- PAGE HEADER & PANEL EXPORT PDF -->
@@ -276,7 +254,7 @@ function resetFilter() {
                                 <td class="whitespace-nowrap px-6 py-4 text-center">
                                     <div class="flex items-center justify-center gap-2">
 
-                                        <button type="button" @click="openSubmittedAtModal(complaint)"
+                                        <button type="button" @click="openSubmittedAtModal(complaint)" v-if="complaint.status === 'waiting'"
                                             class="inline-flex items-center gap-1.5 rounded-xl border border-amber-200 bg-amber-50 px-3 py-1.5 text-xs font-bold text-amber-700 transition hover:bg-amber-100">
 
                                             <CalendarDaysIcon class="h-3.5 w-3.5" />

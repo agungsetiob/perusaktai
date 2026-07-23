@@ -98,6 +98,11 @@ Route::middleware(['auth', 'active', 'role:admin,supervisor,super_admin'])
 
         Route::get('/simrs/rooms', [AdminSimrsRoomController::class, 'index'])
             ->name('simrs.rooms.index');
+        
+        Route::patch(
+                '/complaints/{complaint}/submitted-at',
+                [AdminComplaintController::class, 'updateSubmittedAt'])
+                ->name('complaints.update-submitted-at');
 
         /*
         |------------------------------------------------------------------
@@ -107,11 +112,6 @@ Route::middleware(['auth', 'active', 'role:admin,supervisor,super_admin'])
         Route::middleware(['role:supervisor,super_admin'])->group(function () {
             // Melihat jejak perubahan sistem
             Route::get('/audit-logs', [AuditLogController::class, 'index'])->name('audit-logs.index');
-
-            Route::patch(
-                '/complaints/{complaint}/submitted-at',
-                [AdminComplaintController::class, 'updateSubmittedAt']
-            )->name('complaints.update-submitted-at');
         });
 
         /*

@@ -10,6 +10,7 @@ import SolveComplaintCard from './Partials/SolveComplaintCard.vue'
 import RejectComplaintCard from './Partials/RejectComplaintCard.vue'
 import AttachmentPreviewModal from '@/Components/AttachmentPreviewModal.vue'
 import ComplaintAiChatCard from '@/Components/ComplaintAiChatCard.vue'
+import FlashMessage from '@/Components/FlashMessage.vue'
 import { formatDateTime } from '@/utils/date.js'
 import type { User } from '@/types'
 
@@ -47,6 +48,7 @@ const user = page.props.auth.user as User
     <Head :title="`Detail #${complaint.tracking_code}`" />
 
     <AdminLayout>
+        <FlashMessage />
         <div class="space-y-5">
 
             <!-- TOP HEADER PANEL -->
