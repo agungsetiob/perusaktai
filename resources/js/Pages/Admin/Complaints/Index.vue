@@ -254,7 +254,7 @@ function resetFilter() {
                                 <td class="whitespace-nowrap px-6 py-4 text-center">
                                     <div class="flex items-center justify-center gap-2">
 
-                                        <button type="button" @click="openSubmittedAtModal(complaint)" v-if="complaint.status === 'waiting'"
+                                        <button type="button" @click="openSubmittedAtModal(complaint)" v-if="complaint.status === 'waiting' || complaint.status === 'under_review'"
                                             class="inline-flex items-center gap-1.5 rounded-xl border border-amber-200 bg-amber-50 px-3 py-1.5 text-xs font-bold text-amber-700 transition hover:bg-amber-100">
 
                                             <CalendarDaysIcon class="h-3.5 w-3.5" />
