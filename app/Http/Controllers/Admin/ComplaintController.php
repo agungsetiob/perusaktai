@@ -5,11 +5,12 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Complaint;
 use App\Models\ComplaintCategory;
-use App\Models\Room;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
+use Illuminate\Validation\Rule;
+use Carbon\Carbon;
 
 class ComplaintController extends Controller
 {
@@ -133,6 +134,29 @@ class ComplaintController extends Controller
             [
                 'complaint' => $complaint,
             ]
+        );
+    }
+
+    public function updateSubmittedAt(
+        Request $request,
+        Complaint $complaint
+    ) {
+        $request->validate([
+            'submitted_at' => [
+                'required',
+                'date',
+            ],
+        ]);
+
+        $complaint->update([
+            'submitted_at' => Carbon::parse(
+                $request->submitted_at
+            ),
+        ]);
+
+        return back()->with(
+            'success',
+            'Tanggal pengaduan berhasil diperbarui.'
         );
     }
 }

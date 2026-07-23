@@ -82,8 +82,7 @@ const user = page.props.auth.user as User
                     <div class="flex flex-col items-start sm:items-end gap-1">
                         <StatusBadge :status="complaint.status" />
                         <span class="text-[11px] text-slate-400 font-medium">Masuk: {{
-                            formatDateTime(complaint.created_at
-                                || complaint.submitted_at) }}</span>
+                            formatDateTime(complaint.submitted_at) }}</span>
                     </div>
                 </div>
             </div>

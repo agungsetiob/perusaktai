@@ -24,6 +24,7 @@ use Illuminate\Support\Facades\Route;
 | Public Area
 |--------------------------------------------------------------------------
 */
+
 Route::get('/', function () {
     return Inertia::render('Welcome', [
         'categories' => ComplaintCategory::select('id', 'name')->get()
@@ -94,8 +95,8 @@ Route::middleware(['auth', 'active', 'role:admin,supervisor,super_admin'])
             ->name('complaints.reject')->middleware(['role:supervisor,super_admin']);
         Route::post('/complaints/{complaint}/solve', [ComplaintResponseController::class, 'solve'])
             ->name('complaints.solve');
-        
-        Route::get('/simrs/rooms',[AdminSimrsRoomController::class, 'index'])
+
+        Route::get('/simrs/rooms', [AdminSimrsRoomController::class, 'index'])
             ->name('simrs.rooms.index');
 
         /*
@@ -106,6 +107,11 @@ Route::middleware(['auth', 'active', 'role:admin,supervisor,super_admin'])
         Route::middleware(['role:supervisor,super_admin'])->group(function () {
             // Melihat jejak perubahan sistem
             Route::get('/audit-logs', [AuditLogController::class, 'index'])->name('audit-logs.index');
+
+            Route::patch(
+                '/complaints/{complaint}/submitted-at',
+                [AdminComplaintController::class, 'updateSubmittedAt']
+            )->name('complaints.update-submitted-at');
         });
 
         /*
@@ -127,7 +133,6 @@ Route::middleware(['auth', 'active', 'role:admin,supervisor,super_admin'])
                 ])
                 ->names('rooms');
         });
-
     });
 
 /*

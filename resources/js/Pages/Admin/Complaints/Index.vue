@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { router, Link, Head } from '@inertiajs/vue3'
-import { reactive } from 'vue'
+import { router, Link, Head, useForm } from '@inertiajs/vue3'
+import { reactive, ref } from 'vue'
 import { formatDateTime } from '@/utils/date'
 import AdminLayout from '@/Layouts/AdminLayout.vue'
 import StatusBadge from '@/Components/StatusBadge.vue'
 import Pagination from '@/Components/Pagination.vue'
+import EditSubmittedAtModal from './Partials/EditSubmittedAtModal.vue'
 import {
     FunnelIcon,
     MagnifyingGlassIcon,
@@ -31,6 +32,48 @@ const filter = reactive({
     category_id: props.filters.category_id ?? '',
 })
 
+const showSubmittedAtModal = ref(false)
+const selectedComplaint = ref<any>(null)
+
+const submittedAtForm = useForm({
+    submitted_at: '',
+})
+
+function openSubmittedAtModal(complaint: any) {
+
+    selectedComplaint.value = complaint
+
+    submittedAtForm.submitted_at =
+        complaint.submitted_at.substring(0, 16)
+
+    showSubmittedAtModal.value = true
+
+}
+
+function updateSubmittedAt() {
+
+    submittedAtForm.patch(
+
+        route(
+            'admin.complaints.update-submitted-at',
+            selectedComplaint.value.id
+        ),
+
+        {
+            preserveScroll: true,
+
+            onSuccess() {
+
+                showSubmittedAtModal.value = false
+
+            }
+
+        }
+
+    )
+
+}
+
 function applyFilter() {
     router.get(
         route('admin.complaints.index'),
@@ -51,13 +94,15 @@ function resetFilter() {
 </script>
 
 <template>
+
     <Head title="Daftar Pengaduan" />
 
     <AdminLayout>
         <div class="space-y-5 animate-fade-in">
 
             <!-- PAGE HEADER & PANEL EXPORT PDF -->
-            <div class="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between border-b border-slate-100 pb-5">
+            <div
+                class="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between border-b border-slate-100 pb-5">
                 <div class="flex items-center gap-2.5">
                     <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-50 text-blue-600">
                         <DocumentArrowDownIcon class="h-5 w-5" />
@@ -76,15 +121,11 @@ function resetFilter() {
                 <form action="/admin/reports/rooms" method="GET" target="_blank"
                     class="rounded-2xl border border-slate-200 bg-white p-3 shadow-sm shadow-slate-100/50 w-full lg:w-auto">
                     <div class="flex flex-col sm:flex-row items-center gap-2.5">
-                        
+
                         <!-- Input Tanggal Mulai -->
                         <div class="relative w-full sm:w-40">
-                            <input 
-                                type="date" 
-                                name="start_date" 
-                                required
-                                class="w-full rounded-xl border border-slate-200 bg-slate-50/50 px-3 py-2 text-xs font-medium text-slate-700 outline-none transition-all focus:border-red-500 focus:bg-white focus:ring-4 focus:ring-red-500/10"
-                            >
+                            <input type="date" name="start_date" required
+                                class="w-full rounded-xl border border-slate-200 bg-slate-50/50 px-3 py-2 text-xs font-medium text-slate-700 outline-none transition-all focus:border-red-500 focus:bg-white focus:ring-4 focus:ring-red-500/10">
                             <span class="absolute right-3 top-2.5 pointer-events-none text-slate-400">
                                 <CalendarDaysIcon class="h-4 w-4" />
                             </span>
@@ -94,19 +135,16 @@ function resetFilter() {
 
                         <!-- Input Tanggal Selesai -->
                         <div class="relative w-full sm:w-40">
-                            <input 
-                                type="date" 
-                                name="end_date" 
-                                required
-                                class="w-full rounded-xl border border-slate-200 bg-slate-50/50 px-3 py-2 text-xs font-medium text-slate-700 outline-none transition-all focus:border-red-500 focus:bg-white focus:ring-4 focus:ring-red-500/10"
-                            >
+                            <input type="date" name="end_date" required
+                                class="w-full rounded-xl border border-slate-200 bg-slate-50/50 px-3 py-2 text-xs font-medium text-slate-700 outline-none transition-all focus:border-red-500 focus:bg-white focus:ring-4 focus:ring-red-500/10">
                             <span class="absolute right-3 top-2.5 pointer-events-none text-slate-400">
                                 <CalendarDaysIcon class="h-4 w-4" />
                             </span>
                         </div>
 
                         <!-- Button Rekap -->
-                        <button class="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-xl bg-red-600 px-4 py-2 text-xs font-bold text-white shadow-md shadow-red-600/10 hover:bg-red-700 transition-all active:scale-95 shrink-0">
+                        <button
+                            class="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-xl bg-red-600 px-4 py-2 text-xs font-bold text-white shadow-md shadow-red-600/10 hover:bg-red-700 transition-all active:scale-95 shrink-0">
                             <DocumentArrowDownIcon class="h-4 w-4" />
                             <span>Export PDF</span>
                         </button>
@@ -117,7 +155,8 @@ function resetFilter() {
 
             <!-- PANEL FILTER -->
             <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm shadow-slate-100/50">
-                <div class="flex items-center gap-2 pb-4 mb-4 border-b border-slate-100 text-xs font-bold uppercase tracking-wider text-slate-400">
+                <div
+                    class="flex items-center gap-2 pb-4 mb-4 border-b border-slate-100 text-xs font-bold uppercase tracking-wider text-slate-400">
                     <FunnelIcon class="h-4 w-4" />
                     Filter Pencarian
                 </div>
@@ -170,7 +209,8 @@ function resetFilter() {
             <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm shadow-slate-100/50">
                 <div class="overflow-x-auto">
                     <table class="w-full border-collapse text-left text-sm">
-                        <thead class="bg-slate-50 border-b border-slate-200 text-xs font-bold uppercase tracking-wider text-slate-500">
+                        <thead
+                            class="bg-slate-50 border-b border-slate-200 text-xs font-bold uppercase tracking-wider text-slate-500">
                             <tr>
                                 <th class="px-6 py-4">Tracking Code</th>
                                 <th class="px-6 py-4">Kategori</th>
@@ -187,7 +227,8 @@ function resetFilter() {
                                 <td colspan="6" class="px-6 py-12 text-center text-slate-400">
                                     <div class="flex flex-col items-center justify-center gap-2">
                                         <InboxIcon class="h-8 w-8 text-slate-300 animate-pulse" />
-                                        <span class="text-sm font-medium">Tidak ada data pengaduan yang ditemukan.</span>
+                                        <span class="text-sm font-medium">Tidak ada data pengaduan yang
+                                            ditemukan.</span>
                                     </div>
                                 </td>
                             </tr>
@@ -196,7 +237,8 @@ function resetFilter() {
                             <tr v-for="complaint in complaints.data" :key="complaint.id"
                                 class="transition-colors hover:bg-slate-50/40">
                                 <!-- Kode Tracking -->
-                                <td class="whitespace-nowrap px-6 py-4 font-mono font-bold text-blue-600 text-xs tracking-wider">
+                                <td
+                                    class="whitespace-nowrap px-6 py-4 font-mono font-bold text-blue-600 text-xs tracking-wider">
                                     {{ complaint.tracking_code }}
                                 </td>
 
@@ -215,7 +257,7 @@ function resetFilter() {
                                         class="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-semibold text-slate-600 border border-slate-200">
                                         Anonim
                                     </span>
-                                    <span v-else class="text-slate-800 font-medium">
+                                    <span v-else class="inline-flex items-center gap-1 rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-semibold text-blue-600 border border-blue-200">
                                         {{ complaint.name }}
                                     </span>
                                 </td>
@@ -232,11 +274,27 @@ function resetFilter() {
 
                                 <!-- Tombol Aksi -->
                                 <td class="whitespace-nowrap px-6 py-4 text-center">
-                                    <Link :href="route('admin.complaints.show', complaint.id)"
-                                        class="inline-flex items-center gap-1.5 justify-center rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-xs font-bold text-slate-700 shadow-sm transition-all hover:bg-slate-50 hover:text-blue-600">
-                                        <EyeIcon class="h-3.5 w-3.5 text-slate-400" />
-                                        <span>Detail</span>
-                                    </Link>
+                                    <div class="flex items-center justify-center gap-2">
+
+                                        <button type="button" @click="openSubmittedAtModal(complaint)"
+                                            class="inline-flex items-center gap-1.5 rounded-xl border border-amber-200 bg-amber-50 px-3 py-1.5 text-xs font-bold text-amber-700 transition hover:bg-amber-100">
+
+                                            <CalendarDaysIcon class="h-3.5 w-3.5" />
+
+                                            <span>Tanggal</span>
+
+                                        </button>
+
+                                        <Link :href="route('admin.complaints.show', complaint.id)"
+                                            class="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-xs font-bold text-slate-700 shadow-sm hover:text-blue-600">
+
+                                            <EyeIcon class="h-3.5 w-3.5" />
+
+                                            Detail
+
+                                        </Link>
+
+                                    </div>
                                 </td>
                             </tr>
                         </tbody>
@@ -246,6 +304,9 @@ function resetFilter() {
             </div>
 
         </div>
+
+        <EditSubmittedAtModal :show="showSubmittedAtModal" :complaint="selectedComplaint"
+            @close="showSubmittedAtModal = false"/>
     </AdminLayout>
 </template>
 <style scoped>
