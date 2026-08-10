@@ -226,7 +226,7 @@
     <table class="kop-table">
         <tr>
             <td class="kop-logo">
-                <img src="{{ public_path('logo.webp') }}" alt="Logo RS">
+                <img src="{{ public_path('logo.png') }}" alt="Logo RS">
             </td>
             <td class="kop-text">
                 <h1>RSUD dr. H. Andi Abdurrahman Noor</h1>
